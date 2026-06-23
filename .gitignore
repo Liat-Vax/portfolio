@@ -15,3 +15,11 @@ portfolio-full.html
 
 # Large source zips (not needed in repo)
 *.zip
+
+# Unused image folders with Hebrew filenames (cause GitHub Pages build failures)
+images/idf-desktop/
+images/idf-mobile/
+images/idf-research/
+images/amwell/
+images/iec/
+images/verint/
