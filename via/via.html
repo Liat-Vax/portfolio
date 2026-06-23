@@ -1,0 +1,700 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>VIA - Verint Intraday Automation | Liat Vax</title>
+  <link rel="stylesheet" href="../tokens.css" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --bg:           var(--color-bg);
+      --bg-dark:      var(--color-dark);
+      --text:         var(--color-text);
+      --text-muted:   var(--color-text-muted);
+      --accent:       var(--color-accent);
+      --accent-light: var(--color-accent-light);
+      --card-bg:      var(--color-surface);
+      --border:       var(--color-border);
+      --serif:        var(--font-serif);
+      --sans:         var(--font-sans);
+      --fs-label:   var(--text-label);
+      --fs-caption: var(--text-small);
+      --fs-body:    var(--text-body);
+      --fs-sub:     1.0625rem;
+      --fs-h3:      var(--text-h3);
+      --fs-h2:      var(--text-h2);
+      --fs-h1:      var(--text-h1);
+      --lh-tight:   var(--leading-tight);
+      --lh-heading: var(--leading-snug);
+      --lh-body:    var(--leading-relaxed);
+    }
+
+    html { scroll-behavior: smooth; }
+    body { font-family: var(--sans); background: var(--bg); color: var(--text); line-height: 1.6; -webkit-font-smoothing: antialiased; }
+
+    /* ── NAV ── */
+    nav { position: fixed; top: 0; left: 0; right: 0; z-index: 100; display: flex; justify-content: space-between; align-items: center; padding: 20px 60px; background: var(--color-nav-dark); backdrop-filter: blur(12px); }
+    .nav-logo { font-family: var(--sans); font-weight: 600; font-size: var(--fs-sub); color: var(--color-bg); text-decoration: none; }
+    .nav-back { font-size: var(--fs-caption); font-weight: 500; color: var(--color-cream-75); text-decoration: none; }
+    .nav-back:hover { color: var(--color-bg); text-decoration: underline; }
+
+    /* ── HERO ── */
+    .case-hero { background: var(--bg-dark); color: var(--color-text-on-dark); padding: 120px 60px 60px; display: grid; grid-template-columns: 1fr 1fr; gap: 60px; align-items: center; min-height: 78vh; max-height: 88vh; overflow: hidden; }
+    .case-hero h1 { font-family: var(--sans); font-weight: 600; font-size: var(--fs-h1); line-height: var(--lh-tight); letter-spacing: -.02em; margin-bottom: 16px; }
+    .case-hero-sub { font-size: var(--fs-body); color: #ffffff; font-weight: 500; letter-spacing: .04em; margin-bottom: 20px; }
+    .case-hero-tags { display: flex; flex-wrap: wrap; gap: 8px; }
+    .case-hero-tag { display: inline-block; font-size: var(--fs-label); font-weight: 400; letter-spacing: .12em; text-transform: uppercase; color: #D4D6FF; background: rgba(168, 171, 255, 0.22); border: 1px solid rgba(168, 171, 255, 0.38); padding: 5px 12px; border-radius: 100px; }
+    .case-hero-tag.ai-tag { display: inline-flex; align-items: center; gap: 5px; color: #F5D97A; background: rgba(245, 200, 0, 0.12); border-color: rgba(245, 200, 0, 0.35); }
+
+    /* Hero mockup */
+    .hero-img-wrap { width: 100%; border-radius: 12px; overflow: hidden; border: 1px solid var(--color-nav-border-dark); background: var(--color-device-topbar); font-family: var(--sans); }
+    .ui-topbar { background: var(--color-device-topbar); padding: 10px 16px; display: flex; align-items: center; gap: 10px; border-bottom: 1px solid var(--color-nav-border-dark); }
+    .ui-topbar-title { font-size: var(--fs-label); font-weight: 600; color: var(--color-hero-tag); letter-spacing: .08em; }
+    .ui-badge { font-size: .6rem; padding: 2px 8px; border-radius: 100px; font-weight: 600; }
+    .ui-badge.active { background: var(--color-success-bg); color: var(--color-success-dark); }
+    .ui-table { width: 100%; border-collapse: collapse; }
+    .ui-table th { font-size: .6rem; font-weight: 600; letter-spacing: .1em; text-transform: uppercase; color: var(--color-white-45); padding: 8px 12px; text-align: left; border-bottom: 1px solid var(--color-nav-border-dark); background: var(--color-nav-border-dark); }
+    .ui-table td { font-size: .65rem; color: var(--color-white-82); padding: 9px 12px; border-bottom: 1px solid var(--color-nav-border-dark); }
+    .ui-table tr:last-child td { border-bottom: none; }
+    .ui-status { display: inline-flex; align-items: center; gap: 4px; font-size: .6rem; font-weight: 600; padding: 2px 8px; border-radius: 100px; }
+    .ui-status.active { background: var(--color-success-bg); color: var(--color-success-dark); }
+    .ui-status.inactive { background: var(--color-nav-border-dark); color: var(--color-cream-40); }
+    .ui-conflict { color: var(--color-conflict); font-size: .6rem; display: flex; align-items: center; gap: 3px; }
+    .ui-conflict::before { content: "!"; font-weight: 700; font-size: .55rem; }
+
+    /* ── BODY ── */
+    .case-body { max-width: 1040px; margin: 0 auto; padding: 80px 60px; }
+
+    /* ── PAGE NAV (overview jump links) ── */
+    .page-nav { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 32px; }
+    .page-nav a {
+      display: inline-flex; align-items: center; gap: 5px;
+      font-size: var(--fs-label); font-weight: 600; letter-spacing: .08em; text-transform: uppercase;
+      color: var(--accent); background: var(--card-bg); border: 1px solid var(--border);
+      padding: 7px 14px; border-radius: 100px; text-decoration: none;
+      transition: background .18s, color .18s, border-color .18s, transform .18s;
+    }
+    .page-nav a:hover { background: var(--accent); color: #fff; border-color: var(--accent); transform: translateY(-1px); }
+    .page-nav a .pn-arrow { font-size: .75em; opacity: .6; transition: opacity .18s; }
+    .page-nav a:hover .pn-arrow { opacity: 1; }
+    .case-body section { margin-bottom: 72px; }
+    .section-label { font-size: var(--fs-label); font-weight: 600; letter-spacing: .14em; text-transform: uppercase; color: var(--accent); margin-bottom: 10px; }
+    h2 { font-family: var(--sans); font-weight: 600; font-size: var(--fs-h2); letter-spacing: -.02em; margin-bottom: 20px; line-height: var(--lh-heading); }
+    p { font-size: var(--fs-body); color: var(--text-muted); line-height: var(--lh-body); margin-bottom: 16px; }
+    p:last-child { margin-bottom: 0; }
+    strong { color: var(--text); font-weight: 600; }
+
+    /* ── ROLE PILLS ── */
+    .role-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-top: 32px; }
+    .role-pill { background: none; padding: 16px 8px; text-align: center; }
+    .role-pill-icon { width: 56px; height: 56px; margin: 0 auto 12px; display: flex; align-items: center; justify-content: center; }
+    .role-pill-icon img { width: 100%; height: 100%; object-fit: contain; }
+    .role-pill-label { font-size: var(--fs-label); font-weight: 600; color: var(--color-role-pill); line-height: 1.3; }
+
+    /* ── PROCESS STEPS ── */
+    .process-steps { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-top: 32px; }
+    .process-step { background: var(--card-bg); border: 1px solid var(--border); border-radius: 12px; padding: 28px; position: relative; }
+    .step-number { font-size: var(--fs-label); font-weight: 700; letter-spacing: .1em; text-transform: uppercase; color: var(--accent); margin-bottom: 10px; }
+    .step-title { font-family: var(--sans); font-weight: 600; font-size: var(--fs-sub); margin-bottom: 10px; color: var(--text); }
+    .step-body { font-size: var(--fs-body); color: var(--text-muted); line-height: var(--lh-body); margin: 0; }
+    /* Shiny AI star + label */
+    .ai-star {
+      position: absolute; top: 16px; right: 16px;
+      display: flex; align-items: center; gap: 5px;
+      pointer-events: none; user-select: none;
+    }
+    .ai-star-icon {
+      font-size: 1.1rem; line-height: 1; color: #F5C800;
+      animation: star-twinkle 3.2s ease-in-out infinite;
+      display: inline-block;
+    }
+    .ai-star-label {
+      font-size: .58rem; font-weight: 700; letter-spacing: .1em; text-transform: uppercase;
+      color: #6B4D00;
+    }
+    @keyframes star-twinkle {
+      0%,100% { transform: scale(1) rotate(0deg);    filter: drop-shadow(0 0 4px rgba(245,200,0,.65)); opacity: 1; }
+      25%      { transform: scale(1.3) rotate(22deg); filter: drop-shadow(0 0 10px rgba(245,200,0,1));  opacity: 1; }
+      50%      { transform: scale(0.85) rotate(0deg); filter: drop-shadow(0 0 2px rgba(245,200,0,.4));  opacity: .7; }
+      75%      { transform: scale(1.15) rotate(-18deg); filter: drop-shadow(0 0 8px rgba(245,200,0,.9)); opacity: 1; }
+    }
+    /* AI badge, spinning orbit border + glow pulse */
+    .ai-chip {
+      display: inline-flex; align-items: center; gap: 5px;
+      padding: 3px 9px 3px 4px; border-radius: 100px;
+      font-size: .58rem; font-weight: 700; letter-spacing: .08em; text-transform: uppercase;
+      color: #E8A838;
+      position: relative; isolation: isolate;
+      animation: ai-glow 2.8s ease-in-out infinite;
+    }
+    /* spinning conic-gradient ring */
+    .ai-chip::before {
+      content: ''; position: absolute; inset: -1.5px; border-radius: 100px; z-index: -2;
+      background: conic-gradient(from 0deg, #E8A838, #C8721A 80deg, #FFD67A 160deg, #C8721A 240deg, #E8A838 360deg);
+      animation: ai-spin 2.4s linear infinite;
+    }
+    /* dark fill inside the ring */
+    .ai-chip::after {
+      content: ''; position: absolute; inset: 1.5px; border-radius: 100px; z-index: -1;
+      background: #1c1404;
+    }
+    .ai-chip img {
+      width: 13px; height: 13px; object-fit: contain; flex-shrink: 0; display: block;
+      filter: brightness(0) saturate(100%) invert(68%) sepia(55%) saturate(750%) hue-rotate(3deg) brightness(106%) contrast(96%);
+    }
+    @keyframes ai-spin {
+      from { transform: rotate(0deg); }
+      to   { transform: rotate(360deg); }
+    }
+    @keyframes ai-glow {
+      0%, 100% { filter: drop-shadow(0 0 3px rgba(232,168,56,.35)); }
+      50%       { filter: drop-shadow(0 0 9px rgba(232,168,56,.75)); }
+    }
+
+    /* ── CHALLENGE CARDS ── */
+    .challenge { background: var(--card-bg); border: 1px solid var(--border); border-radius: 16px; overflow: hidden; margin-bottom: 28px; padding: 28px; }
+    .challenge-header { margin-bottom: 0; }
+    .challenge-num { font-size: var(--fs-label); font-weight: 700; letter-spacing: .1em; text-transform: uppercase; color: var(--accent); margin-bottom: 8px; text-align: left; }
+    .challenge h3 { font-family: var(--sans); font-weight: 600; font-size: var(--fs-h3); letter-spacing: -.01em; margin-bottom: 16px; color: var(--text); text-align: left; }
+    .challenge p { font-size: var(--fs-body); color: var(--text-muted); line-height: var(--lh-body); padding: 0; text-align: left; }
+    .challenge p:first-of-type { padding-top: 12px; }
+    .solution-label { display: inline-block; font-size: var(--fs-label); font-weight: 700; letter-spacing: .1em; text-transform: uppercase; color: var(--color-success); background: var(--color-success-bg); padding: 4px 12px; border-radius: 100px; margin: 24px 0 10px; }
+    .challenge-footer { padding: 0; }
+
+    /* ── DECISION DIAGRAM ── */
+    .decision-diagram { margin: 20px 0 24px; display: grid; grid-template-columns: 1fr 1fr; gap: 0; border-radius: 14px; overflow: hidden; border: 1px solid var(--color-border); }
+    .decision-box { padding: 24px; position: relative; }
+    .decision-box.option-a { background: var(--color-surface); border-right: 1px solid var(--color-border); }
+    .decision-box.option-b { background: rgba(168,171,255,0.07); }
+    .decision-box-label { font-size: .58rem; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; margin-bottom: 10px; text-align: left; }
+    .option-a .decision-box-label { color: var(--color-text-muted); opacity: .6; }
+    .option-b .decision-box-label { color: var(--color-hero-tag); display: flex; align-items: center; gap: 6px; }
+    .decision-box-check { width: 16px; height: 16px; border-radius: 50%; background: var(--color-hero-tag); display: inline-flex; align-items: center; justify-content: center; font-size: .55rem; font-weight: 700; color: var(--color-dark); flex-shrink: 0; }
+    .decision-box-title { font-family: var(--sans); font-weight: 600; font-size: 1rem; margin-bottom: 14px; text-align: left; }
+    .decision-box.option-a .decision-box-title { color: var(--color-text-muted); }
+    .decision-box.option-b .decision-box-title { color: var(--color-text); }
+    .decision-box-body { font-size: var(--fs-caption); line-height: 1.7; }
+    .decision-box-body li { margin-bottom: 5px; padding-left: 16px; position: relative; list-style: none; text-align: left; }
+    .decision-box.option-a .decision-box-body { color: var(--color-text-muted); opacity: .7; }
+    .decision-box.option-a .decision-box-body li::before { content: '–'; position: absolute; left: 0; color: var(--color-border); font-weight: 600; }
+    .decision-box.option-b .decision-box-body { color: var(--color-text-muted); }
+    .decision-box.option-b .decision-box-body li::before { content: '✓'; position: absolute; left: 0; color: var(--color-hero-tag); font-weight: 700; font-size: .65rem; }
+
+    /* ── CONFLICT CALLOUT ── */
+    .conflict-callout { margin: 0 0 20px; background: var(--color-surface); border-left: 3px solid #C8721A; border-radius: 0 12px 12px 0; padding: 20px 24px; }
+    .conflict-title { font-size: .82rem; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; color: #8B4A00; margin-bottom: 8px; text-align: left; }
+    .conflict-body { font-size: var(--fs-body); color: var(--color-text-muted); line-height: 1.7; padding: 0; text-align: left; }
+
+    /* ── IMAGE PLACEHOLDERS ── */
+    .img-placeholder { width: 100%; aspect-ratio: 16/9; background: linear-gradient(135deg, var(--color-placeholder-a) 0%, var(--color-placeholder-b) 100%); border-radius: 10px; display: flex; flex-direction: column; align-items: center; justify-content: center; color: var(--text-muted); font-size: var(--fs-caption); text-align: center; padding: 20px; gap: 8px; margin: 16px 0; }
+    .img-placeholder .img-icon { font-size: 2rem; opacity: .4; }
+    .img-placeholder .img-caption { font-size: var(--fs-label); color: var(--text-muted); opacity: .7; max-width: 280px; }
+    .img-block { padding-top: 20px; }
+    .img-label { font-size: var(--fs-label); font-weight: 600; text-transform: uppercase; letter-spacing: .08em; color: var(--accent); margin-bottom: 12px; text-align: left; display: block; }
+    .img-row { display: grid; gap: 16px; }
+    .img-row.cols-2 { grid-template-columns: 1fr 1fr; }
+
+    hr { border: none; border-top: 1px solid var(--border); margin: 48px 0; }
+
+    /* ── STAT ROW ── */
+    .stat-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; margin-top: 32px; }
+    .stat-card { background: var(--card-bg); border: 1px solid var(--border); border-radius: 12px; padding: 28px 24px; text-align: center; }
+    .stat-number { font-family: var(--sans); font-size: 2.2rem; font-weight: 600; color: var(--accent); letter-spacing: -.02em; line-height: 1; margin-bottom: 8px; }
+    .stat-label { font-size: var(--fs-caption); color: var(--text-muted); line-height: 1.4; }
+
+    /* ── OUTCOME ── */
+    .outcome-strip { background: var(--bg-dark); color: var(--color-text-on-dark); border-radius: 16px; padding: 40px 44px; margin-top: 32px; }
+    .outcome-strip h3 { font-family: var(--sans); font-weight: 600; font-size: 1.5rem; letter-spacing: -.01em; margin-bottom: 12px; }
+    .outcome-strip p { color: var(--color-cream-70); font-size: .95rem; line-height: var(--lh-body); padding: 0; margin-bottom: 0; }
+    .outcome-strip p + p { margin-top: 12px; }
+
+    /* ── PROJECT NAV ── */
+    .project-nav { display: flex; justify-content: space-between; align-items: center; padding: 40px 60px; border-top: 1px solid var(--border); background: var(--card-bg); }
+    .project-nav a { text-decoration: none; display: flex; flex-direction: column; gap: 4px; }
+    .project-nav a.prev { align-items: flex-start; }
+    .project-nav a.next { align-items: flex-end; }
+    .pn-label { font-size: var(--fs-label); font-weight: 600; letter-spacing: .1em; text-transform: uppercase; color: var(--text-muted); }
+    .pn-title { font-family: var(--sans); font-weight: 600; font-size: var(--fs-sub); color: var(--text); }
+    .project-nav a:hover .pn-title { color: var(--accent); }
+
+    .fade-up { opacity: 0; transform: translateY(28px); transition: opacity .6s ease, transform .6s ease; }
+    .fade-up.visible { opacity: 1; transform: none; }
+
+    @media (max-width: 900px) {
+      nav { padding: 16px 24px; }
+      .case-hero { grid-template-columns: 1fr; min-height: auto; padding: 100px 32px 48px; }
+      .case-body { padding: 48px 32px; }
+      .role-grid { grid-template-columns: repeat(2, 1fr); }
+      .process-steps { grid-template-columns: 1fr; }
+      .decision-diagram { grid-template-columns: 1fr; }
+      .img-row.cols-2 { grid-template-columns: 1fr; }
+      .stat-row { grid-template-columns: 1fr; }
+      .project-nav { padding: 32px 24px; flex-direction: column; gap: 20px; }
+    }
+
+    @media (max-width: 600px) {
+      nav { padding: 16px 20px; }
+      .case-hero { padding: 88px 20px 40px; }
+      .case-hero h1 { font-size: clamp(2rem, 8vw, 3rem); }
+      .case-body { padding: 40px 20px; }
+      .case-hero-tags { gap: 6px; }
+      .case-hero-tag { font-size: .55rem; padding: 4px 10px; }
+      .role-grid { grid-template-columns: repeat(2, 1fr); }
+      .img-block { padding: 0 0 24px; }
+      .process-steps { gap: 12px; }
+      .challenge { padding: 20px; }
+      .project-nav { padding: 24px 20px; }
+    }
+
+    /* ── LIGHTBOX ── */
+    #lb-overlay {
+      display: none; position: fixed; inset: 0; z-index: 1000;
+      background: rgba(10, 12, 22, .95); backdrop-filter: blur(6px);
+      align-items: center; justify-content: center; flex-direction: column;
+    }
+    #lb-overlay.active { display: flex; }
+    #lb-img-wrap { position: relative; max-width: 92vw; max-height: 82vh; display: flex; align-items: center; justify-content: center; }
+    #lb-img { max-width: 92vw; max-height: 80vh; border-radius: 10px; object-fit: contain; box-shadow: 0 24px 80px rgba(0,0,0,.6); display: block; transform-origin: center; transition: opacity .18s ease, transform .2s ease; cursor: zoom-in; }
+    #lb-img.zoomed { cursor: zoom-out; }
+    #lb-caption { margin-top: 12px; font-size: var(--fs-caption); color: rgba(244,239,229,.75); text-align: center; max-width: 600px; }
+    #lb-zoom-controls { display: flex; gap: 6px; align-items: center; position: fixed; bottom: 28px; left: 50%; transform: translateX(-50%); z-index: 1002; }
+    .lb-zoom-btn { background: rgba(255,255,255,.12); border: 1px solid rgba(255,255,255,.2); color: #fff; width: 32px; height: 32px; border-radius: 6px; font-size: .95rem; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: background .15s; }
+    .lb-zoom-btn:hover { background: rgba(255,255,255,.22); }
+    .lb-zoom-btn:disabled { opacity: .35; cursor: default; }
+    .lb-zoom-label { font-size: .7rem; color: rgba(244,239,229,.6); min-width: 40px; text-align: center; }
+    #lb-counter { position: fixed; top: 22px; left: 50%; transform: translateX(-50%); font-size: var(--fs-label); font-weight: 600; letter-spacing: .08em; color: rgba(244,239,229,.95); background: rgba(255,255,255,.12); border: 1px solid rgba(255,255,255,.2); padding: 5px 16px; border-radius: 100px; z-index: 1002; }
+    .lb-btn { position: fixed; top: 50%; transform: translateY(-50%); background: rgba(255,255,255,.1); border: 1px solid rgba(255,255,255,.15); color: #fff; width: 52px; height: 52px; border-radius: 50%; font-size: 1.4rem; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: background .15s; z-index: 1001; user-select: none; }
+    .lb-btn:hover { background: rgba(255,255,255,.2); }
+    #lb-prev { left: 20px; }
+    #lb-next { right: 20px; }
+    #lb-close { position: fixed; top: 20px; right: 24px; z-index: 1001; background: rgba(255,255,255,.1); border: 1px solid rgba(255,255,255,.15); color: #fff; width: 44px; height: 44px; border-radius: 50%; font-size: 1.2rem; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: background .15s; }
+    #lb-close:hover { background: rgba(255,255,255,.2); }
+    [data-lightbox] { cursor: zoom-in; }
+  </style>
+</head>
+<body>
+
+<nav>
+  <a href="../portfolio.html" class="nav-logo">Liat Vax</a>
+  <a href="../portfolio.html#projects" class="nav-back">Back to Portfolio</a>
+</nav>
+
+<!-- ── HERO ── -->
+<div class="case-hero">
+  <div>
+    <h1>VIA - Verint Intraday Automation</h1>
+    <p class="case-hero-sub">Designing Verint's first real-time product from the ground up</p>
+    <div class="case-hero-tags">
+      <span class="case-hero-tag">Verint</span>
+      <span class="case-hero-tag">Workforce Management</span>
+      <span class="case-hero-tag">Real-Time</span>
+      <span class="case-hero-tag">Desktop</span>
+      <span class="case-hero-tag">Complex Systems</span>
+      <span class="case-hero-tag">Built from Scratch</span>
+      <span class="case-hero-tag ai-tag"><span class="ai-star-icon" style="font-size:.75rem;">✦</span> AI Assisted</span>
+    </div>
+  </div>
+  <div class="hero-img-wrap">
+    <img src="images/rules-list.png" alt="VIA rules list screen" style="width:100%;display:block;" / data-lightbox data-caption="VIA rules list screen" />
+  </div>
+</div>
+
+<!-- ── BODY ── -->
+<div class="case-body">
+
+  <!-- Overview -->
+  <section class="fade-up" id="overview">
+    <p class="section-label">Overview</p>
+    <h2>Verint's first product to work in real time</h2>
+    <p>Workforce management tools have always been about planning. You design the schedule in advance, assign breaks, map activities, and send agents to their stations. But real life rarely follows the plan. Agents miss breaks. Queues spike. Shifts need extending. Until VIA, Verint had no answer for what happens <strong>during the day, when things go off-script.</strong></p>
+    <p>VIA is Verint's first step into real-time WFM. It detects intraday events as they happen and triggers automated responses: reassigning a break, offering a shift extension, pulling an agent into an urgent activity. In many cases, the manager doesn't need to do anything at all. The system handles it quietly, and alerts the manager only when human judgment is genuinely required.</p>
+    <p>My job was to design the configuration system that makes all of this possible: the interface where WFM administrators set up the automation rules that run during the day.</p>
+  </section>
+
+  <!-- My Role -->
+  <section class="fade-up" id="role">
+    <p class="section-label">My Role</p>
+    <h2>End-to-end design lead</h2>
+    <p>I owned the full design of VIA's configuration experience, from UX flows and information architecture through to the final UI screens handed off to development. Alongside that, I collaborated with the product manager on structuring customer interview questions, and stayed involved throughout development to answer questions from the engineering team.</p>
+    <div class="role-grid">
+      <div class="role-pill">
+        <div class="role-pill-icon"><img src="../images/Icon/icons8-ux-80.png" alt="UX and UI Design" / /></div>
+        <div class="role-pill-label">UX and UI Design</div>
+      </div>
+      <div class="role-pill">
+        <div class="role-pill-icon"><img src="../images/Icon/icons8-collaboration-80.png" alt="PM Collaboration" / /></div>
+        <div class="role-pill-label">PM Collaboration</div>
+      </div>
+      <div class="role-pill">
+        <div class="role-pill-icon"><img src="../images/Icon/icons8-research-80.png" alt="Interview Question Design" / /></div>
+        <div class="role-pill-label">Interview Question Design</div>
+      </div>
+      <div class="role-pill">
+        <div class="role-pill-icon"><img src="../images/Icon/icons8-developer-80.png" alt="Dev Support" / /></div>
+        <div class="role-pill-label">Dev Support</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Design Process -->
+  <section class="fade-up" id="process">
+    <p class="section-label">Design Process</p>
+    <h2>Applying familiar WFM knowledge to an unfamiliar problem</h2>
+    <p>Verint has deep expertise in workforce management. We understood how WFM administrators think and work. The challenge wasn't starting from zero, it was adapting that existing knowledge to a new context: real-time, where decisions happen in seconds and the stakes of getting it wrong are immediate.</p>
+    <div class="process-steps">
+      <div class="process-step">
+        <p class="step-number">01: Research</p>
+        <h3 class="step-title">Understanding the intraday reality</h3>
+        <p class="step-body">We collaborated with the PM to design customer interview questions for WFM administrators. We focused on how they currently handle intraday events manually, what types of automation they'd trust to run without their approval, and where they'd always want to stay in control.</p>
+      </div>
+      <div class="process-step">
+        <p class="step-number">02: Scoping</p>
+        <h3 class="step-title">Narrowing down a large space</h3>
+        <p class="step-body">Real-time WFM covers a wide range of scenarios. The product team defined what to build in v1, our job was to understand the scope deeply enough to design for it with intention, making deliberate choices about what to show, what to abstract, and what to leave room for in future iterations.</p>
+      </div>
+      <div class="process-step">
+        <span class="ai-star" aria-label="AI"><span class="ai-star-icon">✦</span><span class="ai-star-label">AI</span></span>
+        <p class="step-number">03: Exploration</p>
+        <h3 class="step-title">Guided 6-up concepts to explore directions</h3>
+        <p class="step-body">Once I had a strong enough grasp of the requirements, I wrote detailed instructions for Claude and guided it to generate 6-up layout variations, different ways the configuration interface could be structured. I evaluated the options and chose a direction, using Claude as a brainstorming partner throughout.</p>
+      </div>
+      <div class="process-step">
+        <p class="step-number">04: Concept approval</p>
+        <h3 class="step-title">Aligning on direction before going deep</h3>
+        <p class="step-body">Before committing to detailed design, I presented the chosen concept direction to the PM for review and sign-off. This alignment step made sure we were both confident in the structural approach before investing time in screen-level detail and edge cases.</p>
+      </div>
+      <div class="process-step">
+        <p class="step-number">05: Detailed design</p>
+        <h3 class="step-title">Screen by screen, edge case by edge case</h3>
+        <p class="step-body">With a clear direction approved, I moved into detailed design, mapping every screen, state, and edge case. A key challenge emerged mid-way: a hidden dependency between two configuration cards that required rethinking the validation model entirely. Full details in Challenge 02 below.</p>
+      </div>
+      <div class="process-step">
+        <p class="step-number">06: Dev collaboration</p>
+        <h3 class="step-title">Staying involved through build and launch</h3>
+        <p class="step-body">After handoff I stayed closely involved, answering engineering questions, reviewing implemented screens, and iterating as new issues surfaced. Changes came from multiple directions: customer feedback, accessibility issues discovered during implementation, and technical constraints raised by the dev team.</p>
+      </div>
+    </div>
+  </section>
+
+  <hr />
+
+  <!-- Challenges -->
+  <section class="fade-up" id="challenges">
+    <p class="section-label">Challenges</p>
+    <h2>The hard problems we solved</h2>
+
+    <div class="challenge">
+      <div class="challenge-header">
+        <p class="challenge-num">Challenge 01</p>
+        <h3>A brand-new product space with far more to build than we could tackle at once</h3>
+      </div>
+      <p>VIA had no internal reference point. Unlike redesigning an existing tool, we were defining a new product category for Verint. The real-time WFM space had many valid directions: missed breaks, shift extensions, overtime handling, proactive re-scheduling, manager notifications. All of it was in scope. None of it was prioritized.</p>
+      <p>The design risk wasn't making something complex. It was making something <strong>unfocused</strong> - trying to serve every scenario and ending up with a product that served none of them well.</p>
+      <p class="solution-label">How we solved it</p>
+      <div class="challenge-footer">
+        <p>Working closely with the PM, we mapped the intraday scenarios by frequency and impact from the customer interviews. We defined a clear v1 scope: the scenarios most likely to happen in any contact center on any given day. Everything else was documented and deferred. This gave the design a clear job to do, and gave stakeholders a concrete roadmap to react to.</p>
+      </div>
+
+      <div class="img-block">
+        <p class="img-label">The rules library</p>
+        <img src="images/rules-list.png" alt="VIA rules list - 200 automation rules" style="width:100%;border-radius:10px;display:block;" / data-lightbox data-caption="VIA rules list - 200 automation rules" />
+      </div>
+    </div>
+
+    <div class="challenge">
+      <div class="challenge-header">
+        <p class="challenge-num">Challenge 02</p>
+        <h3>A dependency that wasn't in the spec when we designed the structure</h3>
+      </div>
+      <p>The core structural question in designing the rule creation flow was: wizard or summary cards? A wizard enforces completion order and validates inline. Summary cards show all parameters at once, let admins fill them in any sequence, and give an at-a-glance view of the full rule. For expert WFM users configuring many rules daily, summary cards were the clear choice.</p>
+      <p>At the time we made the structural decision, the parameters were defined as independent. The requirements supported it, and the design was built on that foundation.</p>
+
+      <div class="decision-diagram">
+        <div class="decision-box option-a">
+          <p class="decision-box-label">Considered</p>
+          <p class="decision-box-title">Wizard, step-by-step flow</p>
+          <ul class="decision-box-body">
+            <li>Forces completion order</li>
+            <li>Validates each step inline</li>
+            <li>Hides full picture until the end</li>
+            <li>Feels slow for expert users</li>
+          </ul>
+        </div>
+        <div class="decision-box option-b">
+          <p class="decision-box-label"><span class="decision-box-check">✓</span> Chosen</p>
+          <p class="decision-box-title">Summary cards, all parameters at once</p>
+          <ul class="decision-box-body">
+            <li>Full rule visible at a glance</li>
+            <li>Fill in any order</li>
+            <li>Faster for experienced admins</li>
+            <li>Each card deep-dives independently</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="conflict-callout">
+        <p class="conflict-title">Mid-process, the requirements changed</p>
+        <p class="conflict-body">A new product requirement introduced a dependency between the <strong>Activity</strong> and <strong>Organization</strong> parameters. This combination hadn't existed when we made the structural decision. We weren't working with incomplete information; we had specifically checked. The spec changed underneath us, and now the design had to absorb it.</p>
+      </div>
+
+      <p>We loved the summary card model too much to walk it back. The advantages for expert users were real, and the rest of the design was working well. Rather than restructure the entire flow, we looked for a way to handle the new constraint without losing what made the model right.</p>
+
+      <div class="img-block">
+        <p class="img-label">The conflict state in the UI</p>
+        <img src="images/edit-employees-conflict.png" alt="Edit employees screen showing conflict warning" style="width:100%;border-radius:10px;display:block;" / data-lightbox data-caption="Edit employees screen showing conflict warning" />
+      </div>
+
+      <p class="solution-label">How we solved it</p>
+      <div class="challenge-footer">
+        <p>We surfaced the conflict <strong>at the summary level</strong>: once both values are set, the view detects the incompatibility and flags it externally. Neither card needed to know about the other. The validation became a property of the whole view, not a gate between steps.</p>
+        <p>This preserved everything we built around expert users: full overview, fill in any order, no step-by-step friction. We kept the model we believed in and added exactly the guardrail the new requirement needed.</p>
+      </div>
+
+      <div class="img-block">
+        <p class="img-label">Summary cards - rule configuration</p>
+        <img src="images/summary-complete.png" alt="VIA rule creation summary cards layout" style="width:100%;border-radius:10px;display:block;" / data-lightbox data-caption="VIA rule creation summary cards layout" />
+      </div>
+    </div>
+
+    <div class="challenge">
+      <div class="challenge-header">
+        <p class="challenge-num">Challenge 03</p>
+        <h3>A spec too long and too inconsistent to hold in your head</h3>
+      </div>
+      <p>The product requirements for VIA spanned five documents covering scenarios, personas, edge cases, and business rules. The scale of it was the first problem. As you can see in the picture below, they were too long even for Claude to process in one go.</p>
+      <p>On top of the length, some terms were used inconsistently across documents. The same concept appeared under slightly different names in different places, which made it genuinely hard to understand how things connected. Reading linearly and hoping to retain it all wasn't a viable approach.</p>
+      <p class="solution-label">How I worked through it</p>
+      <div class="challenge-footer">
+        <p>I started by asking Claude to build a working prototype from the requirements. The goal wasn't a finished design — it was visual comprehension. Seeing a concrete interpretation of the spec gave me something to react to, which made the written documents significantly easier to navigate on re-read. Abstract requirements became tangible once I could see what they produced.</p>
+        <p>From there, I used Claude as a Q&A layer. Rather than hunting across five documents every time I had a question, I asked directly. This was especially useful for the inconsistent terminology: I could ask what a specific term meant and get a synthesized answer from across the full spec, without cross-referencing manually.</p>
+      </div>
+      <div class="img-block">
+        <p class="img-label">Requirements so long, even Claude couldn't fit them in one context</p>
+        <img src="images/ai-prototype-from-requirements.png" alt="Claude building a prototype from partial requirements" style="width:100%;border-radius:10px;display:block;" / data-lightbox data-caption="Claude building a prototype from partial requirements" />
+      </div>
+    </div>
+
+  </section>
+
+  <!-- Design depth -->
+  <section class="fade-up" id="design-depth">
+    <p class="section-label">Design depth</p>
+    <h2>Every card opens into its own complex sub-screen</h2>
+    <p>The summary card layout looks simple from the outside. What it hides is that each card — Triggers, Employees, Messages — opens into a detailed configuration screen with its own logic, edge cases, and states. The Messages card alone covers delivery methods, rule actions, recipient roles, message templates, and variable injection.</p>
+    <p>This is where a lot of the design complexity lived: making each sub-screen feel approachable without losing the power underneath it.</p>
+    <div style="margin-top:28px;">
+      <p class="img-label" style="margin-bottom:10px;">Summary cards — the full rule at a glance</p>
+      <img src="images/summary-complete.png" alt="VIA summary cards showing complete rule configuration" style="width:100%;border-radius:10px;display:block;margin-bottom:24px;" / data-lightbox data-caption="VIA summary cards showing complete rule configuration" />
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
+      <div>
+        <p class="img-label" style="margin-bottom:8px;">Assign employees</p>
+        <img src="images/edit-employees.png" alt="Assign employees configuration panel" style="width:100%;border-radius:10px;display:block;" / data-lightbox data-caption="Assign employees configuration panel" />
+      </div>
+      <div>
+        <p class="img-label" style="margin-bottom:8px;">Edit triggers</p>
+        <img src="images/edit-triggers.png" alt="Edit triggers configuration panel" style="width:100%;border-radius:10px;display:block;" / data-lightbox data-caption="Edit triggers configuration panel" />
+      </div>
+      <div>
+        <p class="img-label" style="margin-bottom:8px;">Edit messages</p>
+        <img src="images/messages-card-preview.png" alt="Edit messages configuration panel with templates" style="width:100%;border-radius:10px;display:block;" / data-lightbox data-caption="Edit messages configuration panel with templates" />
+      </div>
+    </div>
+  </section>
+
+  <!-- AI in the process -->
+  <section class="fade-up" id="ai-section">
+    <p class="section-label">✦ AI in the process</p>
+    <h2>Claude as a thinking partner throughout</h2>
+    <p>I used Claude at multiple stages of this project, not to replace thinking, but to move faster through it. Each use was intentional and hands-on: I wrote the prompts, reviewed the output critically, and directed the next step.</p>
+    <div class="process-steps" style="grid-template-columns: repeat(2, 1fr);">
+      <div class="process-step" style="border-left: 3px solid var(--accent);">
+        <span class="ai-star" aria-label="AI"><span class="ai-star-icon">✦</span><span class="ai-star-label">AI</span></span>
+        <p class="step-number">Understanding</p>
+        <h3 class="step-title">Prototype from requirements to grasp the structure</h3>
+        <p class="step-body">Before I'd read everything, I asked Claude to build a working prototype from one document. Seeing how it interpreted the spec told me immediately which parts were clear and which were ambiguous, faster than re-reading the same pages twice. Full story in Challenge 03.</p>
+      </div>
+      <div class="process-step" style="border-left: 3px solid var(--accent);">
+        <span class="ai-star" aria-label="AI"><span class="ai-star-icon">✦</span><span class="ai-star-label">AI</span></span>
+        <p class="step-number">Navigation</p>
+        <h3 class="step-title">Questions whenever I didn't know where to look</h3>
+        <p class="step-body">The requirements spanned five documents. Rather than scanning all of them every time I had a question, I asked Claude directly, treating it as a searchable layer over the spec. It saved significant time and let me stay focused on design decisions instead of document hunting.</p>
+      </div>
+      <div class="process-step" style="border-left: 3px solid var(--accent);">
+        <span class="ai-star" aria-label="AI"><span class="ai-star-icon">✦</span><span class="ai-star-label">AI</span></span>
+        <p class="step-number">Exploration</p>
+        <h3 class="step-title">Guided 6-up variations of the concept</h3>
+        <p class="step-body">Once I had a clear enough picture, I wrote detailed instructions and guided Claude to generate layout variations of the configuration interface. I evaluated the options, chose a direction, and continued the conversation from there, using it like a fast sketchpad for structured ideas.</p>
+      </div>
+      <div class="process-step" style="border-left: 3px solid var(--accent);">
+        <span class="ai-star" aria-label="AI"><span class="ai-star-icon">✦</span><span class="ai-star-label">AI</span></span>
+        <p class="step-number">Iteration</p>
+        <h3 class="step-title">Brainstorming complex screens in real time</h3>
+        <p class="step-body">For screens that were technically complex or had many states, I iterated directly with Claude, describing the problem, reviewing a version, refining the prompt, and repeating. It's a powerful tool for getting unstuck quickly on hard UI problems.</p>
+      </div>
+    </div>
+  </section>
+
+
+</div>
+
+<div class="project-nav">
+  <a href="../idf/idf.html" class="prev">
+    <span class="pn-label">Previous</span>
+    <span class="pn-title">IDF Emergency Instructors</span>
+  </a>
+  <a href="../amwell/amwell.html" class="next">
+    <span class="pn-label">Next</span>
+    <span class="pn-title">American Well Dashboard</span>
+  </a>
+</div>
+
+<script>
+  const observer = new IntersectionObserver(entries => {
+    entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); observer.unobserve(e.target); } });
+  }, { threshold: 0.12 });
+  document.querySelectorAll('.fade-up').forEach(el => observer.observe(el));
+</script>
+
+
+
+<div id="lb-overlay" role="dialog" aria-modal="true" aria-label="Image viewer">
+  <button id="lb-close" aria-label="Close">&times;</button>
+  <button class="lb-btn" id="lb-prev" aria-label="Previous image">&#8592;</button>
+  <div id="lb-img-wrap">
+    <img id="lb-img" src="" alt="" />
+  </div>
+  <button class="lb-btn" id="lb-next" aria-label="Next image">&#8594;</button>
+  <div id="lb-caption"></div>
+  <div id="lb-counter"></div>
+  <div id="lb-zoom-controls">
+    <button class="lb-zoom-btn" id="lb-zoom-out" aria-label="Zoom out">&#x2212;</button>
+    <span class="lb-zoom-label" id="lb-zoom-label">100%</span>
+    <button class="lb-zoom-btn" id="lb-zoom-in" aria-label="Zoom in">&#x2b;</button>
+  </div>
+</div>
+<script>
+  (function() {
+    var images = [], current = 0;
+    function buildGallery() {
+      document.querySelectorAll('[data-lightbox]').forEach(function(img, i) {
+        images.push({ src: img.src, caption: img.getAttribute('data-caption') || img.alt || '' });
+        img.addEventListener('click', function() { openAt(i); });
+      });
+    }
+    function openAt(idx) { current = idx; showImage(idx); document.getElementById('lb-overlay').classList.add('active'); document.body.style.overflow = 'hidden'; }
+    function showImage(idx) {
+      var lbImg = document.getElementById('lb-img');
+      lbImg.style.opacity = '0';
+      var e = images[idx];
+      lbImg.onload = function() { lbImg.style.opacity = '1'; };
+      lbImg.src = e.src; lbImg.alt = e.caption;
+      document.getElementById('lb-caption').textContent = e.caption;
+      document.getElementById('lb-counter').textContent = (idx + 1) + ' / ' + images.length;
+    }
+    function close() { document.getElementById('lb-overlay').classList.remove('active'); document.body.style.overflow = ''; }
+    function prev() { current = (current - 1 + images.length) % images.length; showImage(current); }
+    function next() { current = (current + 1) % images.length; showImage(current); }
+    document.getElementById('lb-close').addEventListener('click', close);
+    document.getElementById('lb-prev').addEventListener('click', prev);
+    document.getElementById('lb-next').addEventListener('click', next);
+    document.getElementById('lb-overlay').addEventListener('click', function(e) { if (e.target === this) close(); });
+    document.addEventListener('keydown', function(e) {
+      if (!document.getElementById('lb-overlay').classList.contains('active')) return;
+      if (e.key === 'Escape') close();
+      if (e.key === 'ArrowLeft') prev();
+      if (e.key === 'ArrowRight') next();
+    });
+    var touchStartX = 0;
+    document.getElementById('lb-img-wrap').addEventListener('touchstart', function(e) { touchStartX = e.touches[0].clientX; }, { passive: true });
+    document.getElementById('lb-img-wrap').addEventListener('touchend', function(e) { var dx = e.changedTouches[0].clientX - touchStartX; if (Math.abs(dx) > 40) { dx < 0 ? next() : prev(); } }, { passive: true });
+    buildGallery();
+    var zoom = 1, zImg = document.getElementById('lb-img'), zWrap = document.getElementById('lb-img-wrap');
+    var zLabel = document.getElementById('lb-zoom-label'), zIn = document.getElementById('lb-zoom-in'), zOut = document.getElementById('lb-zoom-out');
+    function setZoom(z) { zoom = Math.min(4, Math.max(1, +z.toFixed(4))); zImg.style.transform = zoom === 1 ? '' : 'scale(' + zoom + ')'; zLabel.textContent = Math.round(zoom * 100) + '%'; zImg.classList.toggle('zoomed', zoom > 1); zOut.disabled = zoom <= 1; zIn.disabled = zoom >= 4; }
+    function resetZoom() { setZoom(1); }
+    zIn.addEventListener('click', function() { setZoom(zoom * 1.5); });
+    zOut.addEventListener('click', function() { setZoom(zoom / 1.5); });
+    zImg.addEventListener('click', function(e) { e.stopPropagation(); setZoom(zoom > 1 ? 1 : 2.5); });
+    zWrap.addEventListener('wheel', function(e) { e.preventDefault(); setZoom(zoom * (e.deltaY < 0 ? 1.13 : 0.88)); }, { passive: false });
+    document.getElementById('lb-prev').addEventListener('click', resetZoom);
+    document.getElementById('lb-next').addEventListener('click', resetZoom);
+    document.getElementById('lb-close').addEventListener('click', resetZoom);
+    document.addEventListener('keydown', function(e) { if (!document.getElementById('lb-overlay').classList.contains('active')) return; if (e.key === 'ArrowLeft' || e.key === 'ArrowRight' || e.key === 'Escape') resetZoom(); });
+    setZoom(1);
+  })();
+</script>
+
+<!-- ── EASTER EGG ── -->
+<style>
+  .case-hero-tag { position: relative; display: inline-flex; align-items: center; gap: 6px; }
+  .tag-x { background: none; border: none; cursor: pointer; color: rgba(212,214,255,.5); font-size: .8rem; line-height: 1; padding: 0; margin: 0; transition: color .2s; font-family: inherit; }
+  .case-hero-tag:hover .tag-x { color: #fff; }
+  #easter-egg { position: fixed; inset: 0; z-index: 99999; pointer-events: none; visibility: hidden; }
+  #easter-egg.active { pointer-events: all; visibility: visible; }
+  .egg-panel { position: absolute; top: 0; height: 100%; width: 50%; background: #0e0e1f; transition: transform .9s cubic-bezier(.76,0,.24,1); z-index: 2; overflow: hidden; will-change: transform; }
+  .egg-panel::after { content: ''; position: absolute; inset: 0; background: repeating-linear-gradient(0deg,transparent,transparent 39px,rgba(255,255,255,.025) 40px); pointer-events: none; }
+  .egg-panel-left { left: 0; }
+  .egg-panel-right { right: 0; }
+  #easter-egg.splitting .egg-panel-left { transform: translateX(-100%); }
+  #easter-egg.splitting .egg-panel-right { transform: translateX(100%); }
+  .egg-seam { position: absolute; left: 50%; top: 0; width: 3px; height: 100%; transform: translateX(-50%); background: linear-gradient(to bottom,transparent 0%,#a8abff 20%,#fff 50%,#a8abff 80%,transparent 100%); z-index: 3; pointer-events: none; animation: seam-pulse 1.2s ease-out forwards; }
+  @keyframes seam-pulse { 0%{opacity:0} 15%{opacity:1} 60%{opacity:1} 100%{opacity:0} }
+  .egg-bg { position: absolute; inset: 0; z-index: 0; background: radial-gradient(ellipse at 50% 45%,#1e1b4b 0%,#0a0a1a 70%); }
+  .egg-stars { position: absolute; inset: 0; z-index: 1; overflow: hidden; pointer-events: none; }
+  .egg-star { position: absolute; border-radius: 50%; background: #fff; animation: star-float 3s ease-in-out infinite; }
+  @keyframes star-float { 0%,100%{opacity:.15;transform:translateY(0)} 50%{opacity:.7;transform:translateY(-6px)} }
+  .egg-message { position: absolute; inset: 0; z-index: 4; display: flex; align-items: center; justify-content: center; opacity: 0; transition: opacity .5s .65s; pointer-events: none; }
+  #easter-egg.splitting .egg-message { opacity: 1; pointer-events: all; }
+  .egg-content { text-align: center; padding: 48px 40px; max-width: 540px; position: relative; z-index: 1; }
+  .egg-gif { width: 150px; height: auto; display: block; margin: 0 auto 24px; animation: egg-bounce .7s .6s cubic-bezier(.34,1.56,.64,1) both; }
+  @keyframes egg-bounce { from{transform:scale(0) rotate(-15deg);opacity:0} to{transform:scale(1) rotate(0);opacity:1} }
+  .egg-title { font-size: 1.8rem; font-weight: 700; color: #fff; letter-spacing: -.02em; margin-bottom: 16px; line-height: 1.2; }
+  .egg-title span { color: #a8abff; }
+  .egg-body { font-size: 1rem; color: rgba(255,255,255,.72); line-height: 1.75; margin-bottom: 32px; }
+  .egg-divider { width: 40px; height: 2px; background: #a8abff; margin: 0 auto 28px; border-radius: 2px; }
+  .egg-contact-label { font-size: .65rem; font-weight: 700; letter-spacing: .14em; text-transform: uppercase; color: #a8abff; margin-bottom: 16px; }
+  .egg-contacts { display: flex; flex-direction: column; gap: 10px; margin-bottom: 36px; }
+  .egg-contacts a { color: #fff; text-decoration: none; font-size: .95rem; display: flex; align-items: center; justify-content: center; gap: 8px; opacity: .85; transition: opacity .2s, color .2s; }
+  .egg-contacts a:hover { opacity: 1; color: #a8abff; }
+  .egg-contacts a .ci { font-size: .8rem; opacity: .6; }
+  .egg-close-btn { position: absolute; top: 16px; right: 16px; width: 36px; height: 36px; display: flex; align-items: center; justify-content: center; background: rgba(255,255,255,.08); border: 1px solid rgba(255,255,255,.18); color: rgba(255,255,255,.7); font-size: 1.2rem; border-radius: 50%; cursor: pointer; transition: background .2s, color .2s, border-color .2s; font-family: inherit; line-height: 1; padding: 0; }
+  .egg-close-btn:hover { background: rgba(255,255,255,.14); color: #fff; border-color: rgba(255,255,255,.35); }
+</style>
+<div id="easter-egg" role="dialog" aria-modal="true" aria-label="Easter egg">
+  <div class="egg-bg"></div>
+  <div class="egg-stars" id="egg-stars"></div>
+  <div class="egg-panel egg-panel-left"></div>
+  <div class="egg-seam"></div>
+  <div class="egg-panel egg-panel-right"></div>
+  <div class="egg-message">
+    <div class="egg-content">
+      <img class="egg-gif" src="../images/ester%20eggs%20gif.gif" alt="Easter eggs" />
+      <h2 class="egg-title">You found my <span>Easter egg.</span></h2>
+      <p class="egg-body">You are exactly the people I want to work with, the ones who get carried away with the experience and have to understand what each component does. We'd either build something great together or spend 3 hours brainstorming what the user is actually trying to do. Probably both.</p>
+      <div class="egg-divider"></div>
+      <p class="egg-contact-label">Let's talk</p>
+      <div class="egg-contacts">
+        <a href="mailto:liatvax@gmail.com">liatvax@gmail.com</a>
+        <a href="tel:+972522203315">+972 52-220-3315</a>
+        <a href="https://il.linkedin.com/in/liat-vax" target="_blank" rel="noopener">linkedin.com/in/liat-vax</a>
+      </div>
+      <button class="egg-close-btn" id="egg-close" aria-label="Close">&#x2715;</button>
+    </div>
+  </div>
+</div>
+<script>
+  (function(){
+    var egg=document.getElementById("easter-egg"),closeBtn=document.getElementById("egg-close"),starsEl=document.getElementById("egg-stars");
+    for(var i=0;i<55;i++){var s=document.createElement("div");s.className="egg-star";var sz=Math.random()*2.5+1;s.style.cssText="width:"+sz+"px;height:"+sz+"px;left:"+(Math.random()*100)+"%%;top:"+(Math.random()*100)+"%%;animation-delay:"+(Math.random()*3)+"s;animation-duration:"+(2.5+Math.random()*2)+"s;";starsEl.appendChild(s);}
+    function openEgg(){egg.classList.add("active");requestAnimationFrame(function(){requestAnimationFrame(function(){egg.classList.add("splitting");});});}
+    function closeEgg(){egg.classList.remove("splitting");setTimeout(function(){egg.classList.remove("active");},900);}
+    document.querySelectorAll(".case-hero-tag").forEach(function(tag){var btn=document.createElement("button");btn.className="tag-x";btn.setAttribute("aria-label","Easter egg");btn.textContent="\u00d7";btn.addEventListener("click",function(e){e.preventDefault();e.stopPropagation();openEgg();});tag.appendChild(btn);});
+    closeBtn.addEventListener("click",closeEgg);
+    document.addEventListener("keydown",function(e){if(e.key==="Escape"&&egg.classList.contains("active"))closeEgg();});
+  })();
+</script>
+
+</body>
+</html>

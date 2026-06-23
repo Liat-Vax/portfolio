@@ -1,0 +1,17 @@
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+._*
+.Spotlight-V100
+.Trashes
+Icon?
+
+# iCloud
+*.icloud
+
+# Old drafts
+portfolio-full.html
+
+# Large source zips (not needed in repo)
+*.zip

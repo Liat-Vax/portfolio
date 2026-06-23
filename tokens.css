@@ -1,0 +1,209 @@
+/*
+ * ╔══════════════════════════════════════════════════════════════════╗
+ * ║          LIAT VAX PORTFOLIO — DESIGN SYSTEM TOKENS              ║
+ * ║  Single source of truth. Edit here; it updates everywhere.      ║
+ * ║  File: tokens.css — linked from every HTML page in the project  ║
+ * ╚══════════════════════════════════════════════════════════════════╝
+ *
+ * RULES
+ *  1. Every font, size, color and spacing value must come from these tokens.
+ *  2. No new raw hex, px, or rem values in HTML files without updating here first.
+ *  3. Accent color must never be used as text on --color-dark backgrounds (fails contrast).
+ *  4. --color-gold is decorative only — never use as text color on any light background.
+ *
+ * CONTRAST RATIOS (WCAG 2.1 AA — ≥4.5:1 normal text, ≥3:1 large text)
+ *  --color-text      on --color-bg       → 15.6:1 ✓
+ *  --color-text      on --color-surface  → 16.1:1 ✓
+ *  --color-text-muted on --color-bg      →  5.3:1 ✓
+ *  --color-text-muted on --color-surface →  5.5:1 ✓
+ *  --color-accent    on --color-bg       →  6.0:1 ✓
+ *  --color-accent    on --color-surface  →  6.2:1 ✓
+ *  --color-text-on-dark on --color-dark  → 15.6:1 ✓
+ *  --color-success   on --color-surface  →  5.5:1 ✓
+ *  --color-error     on --color-surface  →  5.2:1 ✓
+ */
+
+@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=Jost:wght@300;400;500;600&display=swap');
+
+:root {
+
+  /* ─────────────────────────────────────────────────────────────────
+     TYPOGRAPHY
+     ───────────────────────────────────────────────────────────────── */
+
+  /* Font families — only these two, no others */
+  --font-serif: 'IBM Plex Sans', system-ui, sans-serif;  /* Display / hero name */
+  --font-sans:  'Jost', system-ui, sans-serif;           /* Everything else — body, headings, UI  */
+
+  /* Font weights */
+  --weight-light:    300;
+  --weight-regular:  400;
+  --weight-medium:   500;
+  --weight-semibold: 600;
+
+  /* ── Type scale (6 named steps) ─────────────────────────────────
+     Use the NAME, never a raw size. Add nothing outside this scale
+     without approval.
+  */
+  --text-display: clamp(3rem, 5.5vw, 6.4rem);     /* Hero name (serif)                    */
+  --text-h1:      clamp(2.2rem, 4vw, 3.4rem);     /* Page/project titles                  */
+  --text-h2:      clamp(1.75rem, 3vw, 2.25rem);   /* Section headings                     */
+  --text-h3:      1.375rem;                        /* Card titles, challenge titles (22px)  */
+  --text-body:    1rem;                            /* All body copy — minimum 16px always  */
+  --text-small:   0.8125rem;                       /* Captions, meta, helper text (13px)   */
+  --text-label:   0.6875rem;                       /* ALL-CAPS labels, tags, eyebrows (11px) */
+
+  /* Line heights */
+  --leading-tight:   1.15;  /* Display + H1 headings  */
+  --leading-snug:    1.35;  /* H2, H3, sub-headings   */
+  --leading-normal:  1.6;   /* Default / UI text      */
+  --leading-relaxed: 1.8;   /* Body paragraphs        */
+
+
+  /* ─────────────────────────────────────────────────────────────────
+     COLOR PALETTE
+     ───────────────────────────────────────────────────────────────── */
+
+  /* Surfaces */
+  --color-bg:          #FFFAF5;   /* Warm cream — page background                    */
+  --color-surface:     #FFFFFF;   /* White — cards, panels, modals                   */
+  --color-surface-alt: #F5EFE6;   /* Slightly deeper cream — subtle section contrast  */
+  --color-dark:        #1A2035;   /* Dark navy — hero bg, inverted/dark sections     */
+  --color-dark-2:      #232B44;   /* Lighter navy — dark section accents             */
+
+  /* Text */
+  --color-text:              #1A2035;              /* Primary text on light backgrounds (15.6:1 on cream) */
+  --color-text-muted:        #63697A;              /* Secondary / subdued text (5.3:1 on cream)           */
+  --color-text-on-dark:      #FFFAF5;              /* Primary text on dark navy (15.6:1)                  */
+  --color-text-on-dark-muted: rgba(244,239,229,.72); /* Subdued text on dark navy (≈8:1)                  */
+
+  /* Accent — ⚠ changed from #4D8ED4 (3.3:1 FAIL) and #5B5FED (4.9:1 too close)
+     New value #3B5FA5 passes at 6.0:1 on cream and 6.2:1 on white.
+     Use for: links, CTAs, section labels, highlighted numbers.
+     Do NOT use as text on --color-dark (only 2.6:1 there — use cream text instead). */
+  --color-accent:       #3B5FA5;              /* Steel-blue — links, CTAs, labels, highlights */
+  --color-accent-light: rgba(59,95,165,.12);  /* Tint — badge backgrounds, hover states       */
+
+  /* Gold — decorative only.
+     ⚠ NEVER use as text on any light background (#FFFAF5 or #FFFFFF) — fails at 1.5:1.
+     Safe on: --color-dark (10.2:1). Use for: borders, glows, decorative details. */
+  --color-gold: #F5C94A;
+
+  /* Borders */
+  --color-border:      #E8E2D9;             /* Default border / divider on light bg  */
+  --color-border-dark: rgba(255,255,255,.10); /* Border on dark navy bg              */
+
+  /* States */
+  --color-success:    #047857;   /* Success text — dark green (5.5:1 on white) ✓     */
+  --color-success-bg: #D1FAE5;   /* Success background chip                          */
+  --color-error:      #C2410C;   /* Error text — burnt orange (5.2:1 on white) ✓     */
+  --color-error-bg:   #FEF2F2;   /* Error background chip                            */
+
+
+  /* ─────────────────────────────────────────────────────────────────
+     EXTENDED PALETTE - opacity / tint variants
+     ───────────────────────────────────────────────────────────────── */
+
+  /* On-dark hero accent (lavender) - for tags and sub-labels on dark hero bg */
+  --color-hero-tag:        #A8ABFF;              /* 6.3:1 on --color-dark - safe for text */
+  --color-hero-tag-bg:     rgba(91, 95, 237, .15); /* tint badge background on dark */
+
+  /* Role pill accent color */
+  --color-role-pill:       #4044C0;              /* deep blue-purple role labels on light bg */
+
+  /* Navigation scroll backgrounds */
+  --color-nav-dark:        rgba(26, 32, 53, .95);    /* nav bg - dark navy always */
+  --color-nav-light:       rgba(244, 239, 229, .92); /* nav bg when over light sections (legacy) */
+  --color-nav-border-dark: rgba(255, 255, 255, .08); /* nav bottom border on dark bg */
+
+  /* Gold decorative opacity variants (decorative only - never text on light bg) */
+  --color-gold-glow:       rgba(245, 201, 74, .08);  /* subtle bg gradient glow */
+  --color-gold-border:     rgba(245, 201, 74, .25);  /* badge/card border accent */
+  --color-gold-shadow:     rgba(245, 201, 74, .15);  /* drop-shadow tint */
+  --color-gold-rule:       rgba(245, 201, 74, .50);  /* decorative rule / line */
+
+  /* Cream / on-dark opacity variants */
+  --color-cream-95:        rgba(244, 239, 229, .95);  /* strong on-dark text */
+  --color-cream-92:        rgba(244, 239, 229, .92);  /* nav bg light */
+  --color-cream-80:        rgba(244, 239, 229, .80);  /* ghost button hover */
+  --color-cream-78:        rgba(244, 239, 229, .78);  /* about section name */
+  --color-cream-75:        rgba(244, 239, 229, .75);  /* nav links on dark */
+  --color-cream-72:        rgba(244, 239, 229, .72);  /* about section body (matches on-dark-muted) */
+  --color-cream-70:        rgba(247, 246, 242, .70);  /* outcome / strip text */
+  --color-cream-58:        rgba(244, 239, 229, .58);  /* footer muted text */
+  --color-cream-55:        rgba(244, 239, 229, .55);  /* contact secondary text */
+  --color-cream-52:        rgba(244, 239, 229, .52);  /* footer secondary */
+  --color-cream-45:        rgba(244, 239, 229, .45);  /* very muted on dark */
+  --color-cream-40:        rgba(244, 239, 229, .40);  /* ghost button default */
+  --color-cream-38:        rgba(244, 239, 229, .38);  /* heavily muted label */
+  --color-cream-14:        rgba(244, 239, 229, .14);  /* almost invisible on dark */
+  --color-cream-10:        rgba(244, 239, 229, .10);  /* subtle border on dark */
+  --color-cream-06:        rgba(244, 239, 229, .06);  /* hairline divider on dark */
+  --color-white-82:        rgba(255, 255, 255, .82);  /* hero quote text */
+  --color-white-75:        rgba(255, 255, 255, .75);  /* muted text on dark */
+  --color-white-60:        rgba(255, 255, 255, .60);  /* hero name em / muted */
+  --color-white-45:        rgba(255, 255, 255, .45);  /* very muted on dark */
+
+  /* Dark overlay variants */
+  --color-dark-95:         rgba(26, 32, 53, .95);    /* floating badge/tooltip bg */
+  --color-dark-nav:        rgba(24, 21, 15, .92);    /* nav bg over dark sections */
+
+  /* Shadows */
+  --shadow-sm:   0 2px 8px rgba(0, 0, 0, .12);
+  --shadow-md:   0 8px 24px rgba(0, 0, 0, .18);
+  --shadow-lg:   0 24px 64px rgba(0, 0, 0, .50);
+  --shadow-card: 0 8px 40px rgba(0, 0, 0, .28), 0 2px 6px rgba(0, 0, 0, .18);
+  --shadow-card-hover: 0 12px 40px rgba(0, 0, 0, .30), 0 3px 8px rgba(0, 0, 0, .20);
+  --shadow-gold: 0 24px 48px rgba(245, 201, 74, .15);
+
+  /* Mock device / screen frame colors */
+  --color-device-frame:    #2D2D2D;   /* MacBook / device outer frame */
+  --color-device-inner:    #262626;   /* inner bezel */
+  --color-device-screen:   #1A1A1A;   /* screen bg */
+  --color-device-topbar:   #111118;   /* app topbar on dark screen */
+  --color-device-bar:      #3D3D3D;   /* progress / status bar */
+  --color-device-panel:    #2A2A2A;   /* side panel on dark screen */
+  --color-device-deep:     #0D0D18;   /* deepest dark bg for mockups */
+
+  /* Warm amber border (decorative rule in about / dark sections) */
+  --color-amber-border:    rgba(184, 123, 82, .30);
+
+  /* Status / state extras */
+  --color-success-dark:    #059669;   /* slightly lighter green for "after" label */
+  --color-success-deep:    #166534;   /* deep green for summary card strong text */
+  --color-success-dot:     #10B981;   /* status dot / pulse animation */
+  --color-success-pulse-a: rgba(16, 185, 129, .50);  /* pulse start */
+  --color-success-pulse-b: rgba(16, 185, 129, 0);    /* pulse end */
+  --color-conflict:        #FB923C;   /* orange conflict indicator */
+  --color-conflict-bg:     #FFF7ED;   /* conflict callout background */
+  --color-conflict-border: #FED7AA;   /* conflict callout border */
+  --color-conflict-text:   #C2410C;   /* conflict title (same as --color-error) */
+  --color-conflict-body:   #92400E;   /* conflict body text */
+
+  /* Placeholder / wireframe gradient colors */
+  --color-placeholder-a:   #F0EFEB;   /* placeholder gradient start */
+  --color-placeholder-b:   #E5E4DF;   /* placeholder gradient end */
+
+  /* ─────────────────────────────────────────────────────────────────
+     SPACING SCALE
+     All layout padding, gap, and margin should use these steps.
+     ───────────────────────────────────────────────────────────────── */
+  --space-1:  4px;    /* Micro — icon padding, tight gaps          */
+  --space-2:  8px;    /* XSmall — inline gaps, compact padding     */
+  --space-3:  16px;   /* Small — intra-component padding           */
+  --space-4:  24px;   /* Base — default content padding            */
+  --space-5:  32px;   /* Medium — section inner padding            */
+  --space-6:  48px;   /* Large — section vertical rhythm           */
+  --space-7:  64px;   /* XLarge — major section padding / gaps     */
+  --space-8:  96px;   /* 2XLarge — hero/section top/bottom padding */
+
+  /* ─────────────────────────────────────────────────────────────────
+     BORDER RADIUS
+     ───────────────────────────────────────────────────────────────── */
+  --radius-sm:   8px;    /* Cards, images, inputs    */
+  --radius-md:   12px;   /* Larger cards, panels     */
+  --radius-lg:   16px;   /* Hero image, modals       */
+  --radius-xl:   20px;   /* Carousel images          */
+  --radius-full: 100px;  /* Pills, badges, buttons   */
+
+}

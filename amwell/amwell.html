@@ -1,0 +1,455 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>American Well Dashboard | Liat Vax</title>
+  <link rel="stylesheet" href="../tokens.css" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --bg:           var(--color-bg);           /* warm cream page background */
+      --bg-dark:      var(--color-dark);          /* dark navy  -  hero section */
+      --text:         var(--color-text);          /* primary text */
+      --text-muted:   var(--color-text-muted);    /* secondary text */
+      --accent:       var(--color-accent);        /* links, labels, CTAs */
+      --accent-light: var(--color-accent-light);  /* accent tint for badges */
+      --card-bg:      var(--color-surface);       /* white card / panel bg */
+      --border:       var(--color-border);        /* dividers and borders */
+      --serif:        var(--font-serif);
+      --sans:         var(--font-sans);
+      /* ─── TYPE SCALE ─────────────────────────────────────────────── */
+      --fs-label:   var(--text-label);
+      --fs-caption: var(--text-small);
+      --fs-body:    var(--text-body);
+      --fs-sub:     1.0625rem;
+      --fs-h3:      var(--text-h3);
+      --fs-h2:      var(--text-h2);
+      --fs-h1:      var(--text-h1);
+      --lh-tight:   var(--leading-tight);
+      --lh-heading: var(--leading-snug);
+      --lh-body:    var(--leading-relaxed);
+    }
+    html { scroll-behavior: smooth; }
+    body { font-family: var(--sans); background: var(--bg); color: var(--text); line-height: 1.6; -webkit-font-smoothing: antialiased; }
+
+    nav { position: fixed; top: 0; left: 0; right: 0; z-index: 100; display: flex; justify-content: space-between; align-items: center; padding: 20px 60px; background: var(--color-nav-dark); backdrop-filter: blur(12px); }
+    .nav-logo { font-family: var(--sans); font-weight: 600; font-size: var(--fs-sub); color: var(--color-bg); text-decoration: none; }
+    .nav-back { font-size: var(--fs-caption); font-weight: 500; color: var(--color-cream-75); text-decoration: none; }
+    .nav-back:hover { color: var(--color-bg); text-decoration: underline; }
+
+    .case-hero { background: var(--bg-dark); color: var(--color-text-on-dark); padding: 120px 60px 60px; display: grid; grid-template-columns: 1fr 1fr; gap: 60px; align-items: center; min-height: 78vh; max-height: 88vh; overflow: hidden; }
+    .case-hero-text { display: flex; flex-direction: column; justify-content: center; align-items: flex-start; }
+    .case-hero-img { display: flex; align-items: center; justify-content: center; }
+    .case-hero-img img { width: 100%; max-height: 62vh; object-fit: cover; object-position: left center; border-radius: 12px; display: block; }
+    .case-hero h1 { font-family: var(--sans); font-weight: 600; font-size: var(--fs-h1); line-height: var(--lh-tight); letter-spacing: -.02em; margin-bottom: 16px; }
+    .case-hero-sub { font-size: var(--fs-body); color: #ffffff; font-weight: 500; letter-spacing: .04em; margin-bottom: 20px; }
+    .case-hero-tags { display: flex; flex-wrap: wrap; gap: 8px; }
+    .case-hero-tag { display: inline-block; font-size: var(--fs-label); font-weight: 400; letter-spacing: .12em; text-transform: uppercase; color: #D4D6FF; background: rgba(168, 171, 255, 0.22); border: 1px solid rgba(168, 171, 255, 0.38); padding: 5px 12px; border-radius: 100px; }
+    .hero-img-placeholder { width: 100%; aspect-ratio: 16/9; border-radius: 12px; background: var(--color-nav-border-dark); border: 1px solid var(--color-nav-border-dark); display: flex; align-items: center; justify-content: center; color: var(--color-white-60); font-size: .875rem; }
+
+    .case-body { max-width: 1040px; margin: 0 auto; padding: 80px 60px; }
+    .case-body section { margin-bottom: 72px; }
+    .section-label { font-size: var(--fs-label); font-weight: 600; letter-spacing: .14em; text-transform: uppercase; color: var(--accent); margin-bottom: 10px; }
+    h2 { font-family: var(--sans); font-weight: 600; font-size: var(--fs-h2); letter-spacing: -.02em; margin-bottom: 20px; line-height: var(--lh-heading); }
+    p { font-size: var(--fs-body); color: var(--text-muted); line-height: var(--lh-body); margin-bottom: 16px; }
+    p:last-child { margin-bottom: 0; }
+    strong { color: var(--text); font-weight: 600; }
+
+    .role-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 16px; margin-top: 32px; }
+    .role-pill { background: none; padding: 16px 8px; text-align: center; }
+    .role-pill-icon { width: 56px; height: 56px; margin: 0 auto 12px; display: flex; align-items: center; justify-content: center; }
+    .role-pill-icon img { width: 100%; height: 100%; object-fit: contain; }
+    .role-pill-label { font-size: var(--fs-label); font-weight: 600; color: var(--color-role-pill); line-height: 1.3; }
+
+    .process-steps { display: grid; grid-template-columns: 1fr 1fr; gap: 28px; margin-top: 32px; }
+    .process-step { background: var(--card-bg); border: 1px solid var(--border); border-radius: 12px; padding: 28px; }
+    .step-number { font-size: var(--fs-label); font-weight: 700; letter-spacing: .1em; text-transform: uppercase; color: var(--accent); margin-bottom: 10px; }
+    .step-title { font-family: var(--sans); font-weight: 600; font-size: var(--fs-sub); margin-bottom: 10px; color: var(--text); }
+    .step-body { font-size: var(--fs-body); color: var(--text-muted); line-height: var(--lh-body); margin: 0; }
+
+    .challenge { background: var(--card-bg); border: 1px solid var(--border); border-radius: 16px; overflow: hidden; margin-bottom: 28px; padding: 28px; }
+    .challenge-header { padding: 0; }
+    .challenge-num { font-size: var(--fs-label); font-weight: 700; letter-spacing: .1em; text-transform: uppercase; color: var(--accent); margin-bottom: 8px; text-align: left; }
+    .challenge h3 { font-family: var(--sans); font-weight: 600; font-size: var(--fs-h3); letter-spacing: -.01em; margin-bottom: 14px; color: var(--text); text-align: left; }
+    .challenge p { font-size: var(--fs-body); color: var(--text-muted); line-height: var(--lh-body); padding: 0; text-align: left; }
+    .challenge p:first-of-type { padding-top: 12px; }
+    .solution-label { display: inline-block; font-size: var(--fs-label); font-weight: 700; letter-spacing: .1em; text-transform: uppercase; color: var(--color-success); background: var(--color-success-bg); padding: 4px 12px; border-radius: 100px; margin: 20px 0 10px; }
+    .challenge-footer { padding: 0; }
+
+    .img-placeholder { width: 100%; aspect-ratio: 16/9; background: linear-gradient(135deg, var(--color-placeholder-a) 0%, var(--color-placeholder-b) 100%); border-radius: 10px; display: flex; flex-direction: column; align-items: center; justify-content: center; color: var(--text-muted); font-size: var(--fs-caption); text-align: center; padding: 20px; gap: 8px; margin: 16px 0; }
+    .img-placeholder .img-icon { font-size: 2rem; opacity: .4; }
+    .img-placeholder .img-caption { font-size: var(--fs-label); color: var(--text-muted); opacity: .7; max-width: 280px; }
+    .img-row-inner { display: grid; gap: 16px; }
+    .img-row-inner.cols-2 { grid-template-columns: 1fr 1fr; }
+    .img-block { padding: 0 32px 28px; }
+    .img-label { font-size: var(--fs-label); font-weight: 600; text-transform: uppercase; letter-spacing: .08em; color: var(--accent); margin-bottom: 12px; text-align: left; display: block; }
+
+    hr { border: none; border-top: 1px solid var(--border); margin: 48px 0; }
+
+    .table-comparison { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-top: 20px; }
+    .compare-box { background: var(--bg); border: 1px solid var(--border); border-radius: 10px; padding: 20px; }
+    .compare-label { font-size: var(--fs-label); font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: var(--text-muted); margin-bottom: 10px; }
+    .compare-box.after .compare-label { color: var(--color-success-dark); }
+    .compare-box p { font-size: .875rem; padding: 0; margin: 0; }
+
+    .project-nav { display: flex; justify-content: space-between; align-items: center; padding: 40px 60px; border-top: 1px solid var(--border); background: var(--card-bg); }
+    .project-nav a { text-decoration: none; display: flex; flex-direction: column; gap: 4px; }
+    .project-nav a.prev { align-items: flex-start; }
+    .project-nav a.next { align-items: flex-end; }
+    .pn-label { font-size: var(--fs-label); font-weight: 600; letter-spacing: .1em; text-transform: uppercase; color: var(--text-muted); }
+    .pn-title { font-family: var(--sans); font-weight: 600; font-size: var(--fs-sub); color: var(--text); }
+    .project-nav a:hover .pn-title { color: var(--accent); }
+
+    @media (max-width: 900px) {
+      nav { padding: 16px 24px; }
+      .case-hero { grid-template-columns: 1fr; min-height: auto; padding: 100px 32px 48px; }
+      .case-hero-text { }
+      .case-hero-img img { max-height: 260px; }
+      .case-body { padding: 48px 32px; }
+      .role-grid { grid-template-columns: repeat(2, 1fr); }
+      .process-steps { grid-template-columns: 1fr; }
+      .img-row-inner.cols-2 { grid-template-columns: 1fr; }
+      .img-block { padding: 0 0 28px; }
+      .table-comparison { grid-template-columns: 1fr; }
+      .project-nav { padding: 32px 24px; flex-direction: column; gap: 20px; }
+    }
+
+    @media (max-width: 600px) {
+      nav { padding: 16px 20px; }
+      .case-hero { padding: 88px 20px 40px; }
+      .case-hero h1 { font-size: clamp(2rem, 8vw, 3rem); }
+      .case-body { padding: 40px 20px; }
+      .case-hero-tags { gap: 6px; }
+      .case-hero-tag { font-size: .55rem; padding: 4px 10px; }
+      .role-grid { grid-template-columns: repeat(2, 1fr); }
+      .img-block { padding: 0 0 24px; }
+      .process-steps { gap: 12px; }
+      .challenge { padding: 20px; }
+      .project-nav { padding: 24px 20px; }
+    }
+
+    /* ── LIGHTBOX ── */
+    #lb-overlay {
+      display: none; position: fixed; inset: 0; z-index: 1000;
+      background: rgba(10, 12, 22, .95); backdrop-filter: blur(6px);
+      align-items: center; justify-content: center; flex-direction: column;
+    }
+    #lb-overlay.active { display: flex; }
+    #lb-img-wrap { position: relative; max-width: 92vw; max-height: 82vh; display: flex; align-items: center; justify-content: center; }
+    #lb-img { max-width: 92vw; max-height: 80vh; border-radius: 10px; object-fit: contain; box-shadow: 0 24px 80px rgba(0,0,0,.6); display: block; transform-origin: center; transition: opacity .18s ease, transform .2s ease; cursor: zoom-in; }
+    #lb-img.zoomed { cursor: zoom-out; }
+    #lb-caption { margin-top: 12px; font-size: var(--fs-caption); color: rgba(244,239,229,.75); text-align: center; max-width: 600px; }
+    #lb-zoom-controls { display: flex; gap: 6px; align-items: center; position: fixed; bottom: 28px; left: 50%; transform: translateX(-50%); z-index: 1002; }
+    .lb-zoom-btn { background: rgba(255,255,255,.12); border: 1px solid rgba(255,255,255,.2); color: #fff; width: 32px; height: 32px; border-radius: 6px; font-size: .95rem; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: background .15s; }
+    .lb-zoom-btn:hover { background: rgba(255,255,255,.22); }
+    .lb-zoom-btn:disabled { opacity: .35; cursor: default; }
+    .lb-zoom-label { font-size: .7rem; color: rgba(244,239,229,.6); min-width: 40px; text-align: center; }
+    #lb-counter { position: fixed; top: 22px; left: 50%; transform: translateX(-50%); font-size: var(--fs-label); font-weight: 600; letter-spacing: .08em; color: rgba(244,239,229,.95); background: rgba(255,255,255,.12); border: 1px solid rgba(255,255,255,.2); padding: 5px 16px; border-radius: 100px; z-index: 1002; }
+    .lb-btn { position: fixed; top: 50%; transform: translateY(-50%); background: rgba(255,255,255,.1); border: 1px solid rgba(255,255,255,.15); color: #fff; width: 52px; height: 52px; border-radius: 50%; font-size: 1.4rem; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: background .15s; z-index: 1001; user-select: none; }
+    .lb-btn:hover { background: rgba(255,255,255,.2); }
+    #lb-prev { left: 20px; }
+    #lb-next { right: 20px; }
+    #lb-close { position: fixed; top: 20px; right: 24px; z-index: 1001; background: rgba(255,255,255,.1); border: 1px solid rgba(255,255,255,.15); color: #fff; width: 44px; height: 44px; border-radius: 50%; font-size: 1.2rem; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: background .15s; }
+    #lb-close:hover { background: rgba(255,255,255,.2); }
+    [data-lightbox] { cursor: zoom-in; }
+  </style>
+</head>
+<body>
+
+<nav>
+  <a href="../portfolio.html" class="nav-logo">Liat Vax</a>
+  <a href="../portfolio.html#projects" class="nav-back">← Back to Portfolio</a>
+</nav>
+
+<div class="case-hero">
+  <div class="case-hero-text">
+    <h1>American Well</h1>
+    <p class="case-hero-sub">Service Operational Dashboard, Telehealth NOC</p>
+    <div class="case-hero-tags">
+      <span class="case-hero-tag">Enterprise Dashboard</span>
+      <span class="case-hero-tag">Complex System</span>
+      <span class="case-hero-tag">Desktop</span>
+      <span class="case-hero-tag">Matrix</span>
+    </div>
+  </div>
+  <div class="case-hero-img">
+    <img src="images/hero.png" alt="Amwell NOC Dashboard" / data-lightbox data-caption="Amwell NOC Dashboard" />
+  </div>
+</div>
+
+<div class="case-body">
+
+  <section>
+    <p class="section-label">Overview</p>
+    <h2>Redesigning how telehealth operations work</h2>
+    <p>Amwell is a group of products in the telehealth world. Our project focused on improving the NOC (Network Operations Center) dashboard so that Amwell's B2B customers could operate and control their online telehealth services more efficiently.</p>
+    <p>We created an entirely new concept for their existing dashboard, one that fundamentally changed how telehealth representatives managed their day-to-day work. By deeply understanding their needs, we provided a much faster, clearer, and more intuitive way to work.</p>
+  </section>
+
+  <section>
+    <p class="section-label">My Role</p>
+    <h2>Research to concept to shipped product</h2>
+    <p>My responsibility was to conduct research and then translate highly complex operational processes into a new system concept  -  balancing user needs, business requirements, technical constraints, and project challenges throughout.</p>
+    <div class="role-grid">
+      <div class="role-pill"><div class="role-pill-icon"><img src="../images/Icon/icons8-research-80.png" alt="Research" / /></div><div class="role-pill-label">Research</div></div>
+      <div class="role-pill"><div class="role-pill-icon"><img src="../images/Icon/icons8-concept-80.png" alt="Concept" / /></div><div class="role-pill-label">Concept</div></div>
+      <div class="role-pill"><div class="role-pill-icon"><img src="../images/Icon/icons8-design-80.png" alt="Detailed Design" / /></div><div class="role-pill-label">Detailed Design</div></div>
+      <div class="role-pill"><div class="role-pill-icon"><img src="../images/Icon/icons8-team-50.png" alt="Team Guidance" / /></div><div class="role-pill-label">Team Guidance</div></div>
+      <div class="role-pill"><div class="role-pill-icon"><img src="../images/Icon/icons8-flow-80.png" alt="Info Architecture" / /></div><div class="role-pill-label">Info Architecture</div></div>
+    </div>
+  </section>
+
+  <section>
+    <p class="section-label">Design Process</p>
+    <h2>How we approached the problem</h2>
+    <div class="process-steps">
+      <div class="process-step">
+        <p class="step-number">01: Research</p>
+        <h3 class="step-title">Listening to the people doing the work</h3>
+        <p class="step-body">We interviewed telehealth representatives and managers, analyzed existing screens, and reviewed the PRD  -  combining bottom-up user insight with top-down business requirements.</p>
+      </div>
+      <div class="process-step">
+        <p class="step-number">02: Information Architecture</p>
+        <h3 class="step-title">Restructuring what wasn't working</h3>
+        <p class="step-body">After research, we identified that the existing architecture wasn't efficient enough. We proposed structural changes before any visual design began.</p>
+      </div>
+      <div class="process-step">
+        <p class="step-number">03: Concept</p>
+        <h3 class="step-title">"Calculated urgency" as the core value</h3>
+        <p class="step-body">The new concept added a weighted urgency parameter, giving administrators control over priority and allowing representatives to focus on the most critical tasks first.</p>
+      </div>
+      <div class="process-step">
+        <p class="step-number">04  -  Design & Guidance</p>
+        <h3 class="step-title">Detailed screens + team collaboration</h3>
+        <p class="step-body">Designed dozens of screens covering all edge cases, then worked closely with UI designers and the product manager to ship a high-quality product.</p>
+      </div>
+    </div>
+  </section>
+
+  <hr />
+
+  <section>
+    <p class="section-label">Challenges</p>
+    <h2>The hard problems we solved</h2>
+
+    <div class="challenge">
+      <div class="challenge-header">
+        <p class="challenge-num">Challenge 01</p>
+        <h3>Sometimes you have to break something to make it truly great</h3>
+      </div>
+      <p>The product owner had a detailed PRD and knew exactly what they wanted: a separate tab for each type of alert. After research, it was clear this wasn't the right solution  -  and we had to convince them.</p>
+
+      <p class="solution-label">How we solved it</p>
+      <div class="challenge-footer">
+        <p>Telehealth representatives handle four types of issues: long patient wait times, no-shows, provider availability, and busy waiting rooms. The product owner wanted each in its own tab  -  but we discovered these issues are deeply interconnected.</p>
+        <p>For example: a provider leaves unexpectedly (availability issue) → patients queue up (busy waiting room) → wait times grow (long wait time). Solving them separately would be redundant and confusing.</p>
+        <p>We created a diagram showing the overlap, then proposed a unified view with a <strong>weighted urgency parameter</strong>  -  letting administrators set priority and representatives tackle the most critical items first.</p>
+      </div>
+      <div class="img-block">
+        <p class="img-label">The product owner's vision vs. our solution</p>
+        <div class="img-row-inner cols-2">
+          <div style="display:flex;flex-direction:column;gap:6px;">
+            <img src="images/frame-1.png" alt="Product owner vision: separate tabs" style="width:100%;border-radius:8px;" / data-lightbox data-caption="Product owner vision: separate tabs" />
+            <p style="font-size:var(--fs-label);text-align:center;color:var(--text-muted);padding:0;">Product owner's vision</p>
+          </div>
+          <div style="display:flex;flex-direction:column;gap:6px;">
+            <img src="images/frame-4.png" alt="Our solution: unified urgency view" style="width:100%;border-radius:8px;" / data-lightbox data-caption="Our solution: unified urgency view" />
+            <p style="font-size:var(--fs-label);text-align:center;color:var(--text-muted);padding:0;">Our suggested alternative</p>
+          </div>
+        </div>
+      </div>
+      <div class="img-block">
+        <p class="img-label">Before → After</p>
+        <div class="img-row-inner cols-2">
+          <div style="display:flex;flex-direction:column;gap:6px;">
+            <img src="images/frame-2.png" alt="Before: Old dashboard" style="width:100%;border-radius:8px;" / data-lightbox data-caption="Before: Old dashboard" />
+            <p style="font-size:var(--fs-label);text-align:center;color:var(--text-muted);padding:0;">Before</p>
+          </div>
+          <div style="display:flex;flex-direction:column;gap:6px;">
+            <img src="images/hero.png" alt="After: New unified dashboard" style="width:100%;border-radius:8px;aspect-ratio:16/9;object-fit:cover;" / data-lightbox data-caption="After: New unified dashboard" />
+            <p style="font-size:var(--fs-label);text-align:center;color:var(--text-muted);padding:0;">After</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="challenge">
+      <div class="challenge-header">
+        <p class="challenge-num">Challenge 02</p>
+        <h3>Let someone take ownership here</h3>
+      </div>
+      <p>Multiple representatives operated the telehealth center simultaneously without any efficient coordination tool. Several reps would unknowingly work on the same patient  -  wasting time, and worse, contacting patients multiple times about the same issue. Unprofessional and frustrating for everyone.</p>
+
+      <p class="solution-label">How we solved it</p>
+      <div class="challenge-footer">
+        <p>We created unique identities for each representative in the dashboard, then designed a clear ownership workflow:</p>
+        <p>When a representative clicks <strong>"Contact"</strong> on a patient, two things happen simultaneously: the patient becomes unavailable to other reps, and the rep receives the patient's phone number with pre-prepared comment options to log the interaction.</p>
+        <p>After a set time, if the representative hasn't resolved the issue, a notification prompts them to either complete the task or release the patient back to the queue  -  ensuring nothing falls through the cracks.</p>
+      </div>
+      <div class="img-block">
+        <p class="img-label">The patient ownership flow</p>
+        <div style="display: flex; flex-direction: column; gap: 10px;">
+          <img src="images/frame-6.png" alt="Patient row, unassigned" style="width:100%;border-radius:8px;" / data-lightbox data-caption="Patient row, unassigned" />
+          <img src="images/frame-7.png" alt="After clicking Contact" style="width:100%;border-radius:8px;" / data-lightbox data-caption="After clicking Contact" />
+          <img src="images/frame-10.png" alt="After selecting comment" style="width:100%;border-radius:8px;" / data-lightbox data-caption="After selecting comment" />
+          <img src="images/frame-11.png" alt="After marking Done" style="width:100%;border-radius:8px;" / data-lightbox data-caption="After marking Done" />
+        </div>
+      </div>
+    </div>
+  </section>
+
+</div>
+
+<div class="project-nav">
+  <a href="../idf/idf.html" class="prev">
+    <span class="pn-label">← Previous</span>
+    <span class="pn-title">IDF Emergency Instructors</span>
+  </a>
+  <a href="../iec/iec.html" class="next">
+    <span class="pn-label">Next →</span>
+    <span class="pn-title">IEC Website Redesign</span>
+  </a>
+</div>
+
+
+
+<div id="lb-overlay" role="dialog" aria-modal="true" aria-label="Image viewer">
+  <button id="lb-close" aria-label="Close">&times;</button>
+  <button class="lb-btn" id="lb-prev" aria-label="Previous image">&#8592;</button>
+  <div id="lb-img-wrap">
+    <img id="lb-img" src="" alt="" />
+  </div>
+  <button class="lb-btn" id="lb-next" aria-label="Next image">&#8594;</button>
+  <div id="lb-caption"></div>
+  <div id="lb-counter"></div>
+  <div id="lb-zoom-controls">
+    <button class="lb-zoom-btn" id="lb-zoom-out" aria-label="Zoom out">&#x2212;</button>
+    <span class="lb-zoom-label" id="lb-zoom-label">100%</span>
+    <button class="lb-zoom-btn" id="lb-zoom-in" aria-label="Zoom in">&#x2b;</button>
+  </div>
+</div>
+<script>
+  (function() {
+    var images = [], current = 0;
+    function buildGallery() {
+      document.querySelectorAll('[data-lightbox]').forEach(function(img, i) {
+        images.push({ src: img.src, caption: img.getAttribute('data-caption') || img.alt || '' });
+        img.addEventListener('click', function() { openAt(i); });
+      });
+    }
+    function openAt(idx) { current = idx; showImage(idx); document.getElementById('lb-overlay').classList.add('active'); document.body.style.overflow = 'hidden'; }
+    function showImage(idx) {
+      var lbImg = document.getElementById('lb-img');
+      lbImg.style.opacity = '0';
+      var e = images[idx];
+      lbImg.onload = function() { lbImg.style.opacity = '1'; };
+      lbImg.src = e.src; lbImg.alt = e.caption;
+      document.getElementById('lb-caption').textContent = e.caption;
+      document.getElementById('lb-counter').textContent = (idx + 1) + ' / ' + images.length;
+    }
+    function close() { document.getElementById('lb-overlay').classList.remove('active'); document.body.style.overflow = ''; }
+    function prev() { current = (current - 1 + images.length) % images.length; showImage(current); }
+    function next() { current = (current + 1) % images.length; showImage(current); }
+    document.getElementById('lb-close').addEventListener('click', close);
+    document.getElementById('lb-prev').addEventListener('click', prev);
+    document.getElementById('lb-next').addEventListener('click', next);
+    document.getElementById('lb-overlay').addEventListener('click', function(e) { if (e.target === this) close(); });
+    document.addEventListener('keydown', function(e) {
+      if (!document.getElementById('lb-overlay').classList.contains('active')) return;
+      if (e.key === 'Escape') close();
+      if (e.key === 'ArrowLeft') prev();
+      if (e.key === 'ArrowRight') next();
+    });
+    var touchStartX = 0;
+    document.getElementById('lb-img-wrap').addEventListener('touchstart', function(e) { touchStartX = e.touches[0].clientX; }, { passive: true });
+    document.getElementById('lb-img-wrap').addEventListener('touchend', function(e) { var dx = e.changedTouches[0].clientX - touchStartX; if (Math.abs(dx) > 40) { dx < 0 ? next() : prev(); } }, { passive: true });
+    buildGallery();
+    var zoom = 1, zImg = document.getElementById('lb-img'), zWrap = document.getElementById('lb-img-wrap');
+    var zLabel = document.getElementById('lb-zoom-label'), zIn = document.getElementById('lb-zoom-in'), zOut = document.getElementById('lb-zoom-out');
+    function setZoom(z) { zoom = Math.min(4, Math.max(1, +z.toFixed(4))); zImg.style.transform = zoom === 1 ? '' : 'scale(' + zoom + ')'; zLabel.textContent = Math.round(zoom * 100) + '%'; zImg.classList.toggle('zoomed', zoom > 1); zOut.disabled = zoom <= 1; zIn.disabled = zoom >= 4; }
+    function resetZoom() { setZoom(1); }
+    zIn.addEventListener('click', function() { setZoom(zoom * 1.5); });
+    zOut.addEventListener('click', function() { setZoom(zoom / 1.5); });
+    zImg.addEventListener('click', function(e) { e.stopPropagation(); setZoom(zoom > 1 ? 1 : 2.5); });
+    zWrap.addEventListener('wheel', function(e) { e.preventDefault(); setZoom(zoom * (e.deltaY < 0 ? 1.13 : 0.88)); }, { passive: false });
+    document.getElementById('lb-prev').addEventListener('click', resetZoom);
+    document.getElementById('lb-next').addEventListener('click', resetZoom);
+    document.getElementById('lb-close').addEventListener('click', resetZoom);
+    document.addEventListener('keydown', function(e) { if (!document.getElementById('lb-overlay').classList.contains('active')) return; if (e.key === 'ArrowLeft' || e.key === 'ArrowRight' || e.key === 'Escape') resetZoom(); });
+    setZoom(1);
+  })();
+</script>
+
+<!-- ── EASTER EGG ── -->
+<style>
+  .case-hero-tag { position: relative; display: inline-flex; align-items: center; gap: 6px; }
+  .tag-x { background: none; border: none; cursor: pointer; color: rgba(212,214,255,.5); font-size: .8rem; line-height: 1; padding: 0; margin: 0; transition: color .2s; font-family: inherit; }
+  .case-hero-tag:hover .tag-x { color: #fff; }
+  #easter-egg { position: fixed; inset: 0; z-index: 99999; pointer-events: none; visibility: hidden; }
+  #easter-egg.active { pointer-events: all; visibility: visible; }
+  .egg-panel { position: absolute; top: 0; height: 100%; width: 50%; background: #0e0e1f; transition: transform .9s cubic-bezier(.76,0,.24,1); z-index: 2; overflow: hidden; will-change: transform; }
+  .egg-panel::after { content: ''; position: absolute; inset: 0; background: repeating-linear-gradient(0deg,transparent,transparent 39px,rgba(255,255,255,.025) 40px); pointer-events: none; }
+  .egg-panel-left { left: 0; }
+  .egg-panel-right { right: 0; }
+  #easter-egg.splitting .egg-panel-left { transform: translateX(-100%); }
+  #easter-egg.splitting .egg-panel-right { transform: translateX(100%); }
+  .egg-seam { position: absolute; left: 50%; top: 0; width: 3px; height: 100%; transform: translateX(-50%); background: linear-gradient(to bottom,transparent 0%,#a8abff 20%,#fff 50%,#a8abff 80%,transparent 100%); z-index: 3; pointer-events: none; animation: seam-pulse 1.2s ease-out forwards; }
+  @keyframes seam-pulse { 0%{opacity:0} 15%{opacity:1} 60%{opacity:1} 100%{opacity:0} }
+  .egg-bg { position: absolute; inset: 0; z-index: 0; background: radial-gradient(ellipse at 50% 45%,#1e1b4b 0%,#0a0a1a 70%); }
+  .egg-stars { position: absolute; inset: 0; z-index: 1; overflow: hidden; pointer-events: none; }
+  .egg-star { position: absolute; border-radius: 50%; background: #fff; animation: star-float 3s ease-in-out infinite; }
+  @keyframes star-float { 0%,100%{opacity:.15;transform:translateY(0)} 50%{opacity:.7;transform:translateY(-6px)} }
+  .egg-message { position: absolute; inset: 0; z-index: 4; display: flex; align-items: center; justify-content: center; opacity: 0; transition: opacity .5s .65s; pointer-events: none; }
+  #easter-egg.splitting .egg-message { opacity: 1; pointer-events: all; }
+  .egg-content { text-align: center; padding: 48px 40px; max-width: 540px; position: relative; z-index: 1; }
+  .egg-gif { width: 150px; height: auto; display: block; margin: 0 auto 24px; animation: egg-bounce .7s .6s cubic-bezier(.34,1.56,.64,1) both; }
+  @keyframes egg-bounce { from{transform:scale(0) rotate(-15deg);opacity:0} to{transform:scale(1) rotate(0);opacity:1} }
+  .egg-title { font-size: 1.8rem; font-weight: 700; color: #fff; letter-spacing: -.02em; margin-bottom: 16px; line-height: 1.2; }
+  .egg-title span { color: #a8abff; }
+  .egg-body { font-size: 1rem; color: rgba(255,255,255,.72); line-height: 1.75; margin-bottom: 32px; }
+  .egg-divider { width: 40px; height: 2px; background: #a8abff; margin: 0 auto 28px; border-radius: 2px; }
+  .egg-contact-label { font-size: .65rem; font-weight: 700; letter-spacing: .14em; text-transform: uppercase; color: #a8abff; margin-bottom: 16px; }
+  .egg-contacts { display: flex; flex-direction: column; gap: 10px; margin-bottom: 36px; }
+  .egg-contacts a { color: #fff; text-decoration: none; font-size: .95rem; display: flex; align-items: center; justify-content: center; gap: 8px; opacity: .85; transition: opacity .2s, color .2s; }
+  .egg-contacts a:hover { opacity: 1; color: #a8abff; }
+  .egg-contacts a .ci { font-size: .8rem; opacity: .6; }
+  .egg-close-btn { position: absolute; top: 16px; right: 16px; width: 36px; height: 36px; display: flex; align-items: center; justify-content: center; background: rgba(255,255,255,.08); border: 1px solid rgba(255,255,255,.18); color: rgba(255,255,255,.7); font-size: 1.2rem; border-radius: 50%; cursor: pointer; transition: background .2s, color .2s, border-color .2s; font-family: inherit; line-height: 1; padding: 0; }
+  .egg-close-btn:hover { background: rgba(255,255,255,.14); color: #fff; border-color: rgba(255,255,255,.35); }
+</style>
+<div id="easter-egg" role="dialog" aria-modal="true" aria-label="Easter egg">
+  <div class="egg-bg"></div>
+  <div class="egg-stars" id="egg-stars"></div>
+  <div class="egg-panel egg-panel-left"></div>
+  <div class="egg-seam"></div>
+  <div class="egg-panel egg-panel-right"></div>
+  <div class="egg-message">
+    <div class="egg-content">
+      <img class="egg-gif" src="../images/ester%20eggs%20gif.gif" alt="Easter eggs" />
+      <h2 class="egg-title">You found my <span>Easter egg.</span></h2>
+      <p class="egg-body">You are exactly the people I want to work with, the ones who get carried away with the experience and have to understand what each component does. We'd either build something great together or spend 3 hours brainstorming what the user is actually trying to do. Probably both.</p>
+      <div class="egg-divider"></div>
+      <p class="egg-contact-label">Let's talk</p>
+      <div class="egg-contacts">
+        <a href="mailto:liatvax@gmail.com">liatvax@gmail.com</a>
+        <a href="tel:+972522203315">+972 52-220-3315</a>
+        <a href="https://il.linkedin.com/in/liat-vax" target="_blank" rel="noopener">linkedin.com/in/liat-vax</a>
+      </div>
+      <button class="egg-close-btn" id="egg-close" aria-label="Close">&#x2715;</button>
+    </div>
+  </div>
+</div>
+<script>
+  (function(){
+    var egg=document.getElementById("easter-egg"),closeBtn=document.getElementById("egg-close"),starsEl=document.getElementById("egg-stars");
+    for(var i=0;i<55;i++){var s=document.createElement("div");s.className="egg-star";var sz=Math.random()*2.5+1;s.style.cssText="width:"+sz+"px;height:"+sz+"px;left:"+(Math.random()*100)+"%%;top:"+(Math.random()*100)+"%%;animation-delay:"+(Math.random()*3)+"s;animation-duration:"+(2.5+Math.random()*2)+"s;";starsEl.appendChild(s);}
+    function openEgg(){egg.classList.add("active");requestAnimationFrame(function(){requestAnimationFrame(function(){egg.classList.add("splitting");});});}
+    function closeEgg(){egg.classList.remove("splitting");setTimeout(function(){egg.classList.remove("active");},900);}
+    document.querySelectorAll(".case-hero-tag").forEach(function(tag){var btn=document.createElement("button");btn.className="tag-x";btn.setAttribute("aria-label","Easter egg");btn.textContent="\u00d7";btn.addEventListener("click",function(e){e.preventDefault();e.stopPropagation();openEgg();});tag.appendChild(btn);});
+    closeBtn.addEventListener("click",closeEgg);
+    document.addEventListener("keydown",function(e){if(e.key==="Escape"&&egg.classList.contains("active"))closeEgg();});
+  })();
+</script>
+
+</body>
+</html>

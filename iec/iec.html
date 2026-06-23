@@ -1,0 +1,691 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>IEC Website Redesign | Liat Vax</title>
+  <link rel="stylesheet" href="../tokens.css" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --bg:           var(--color-bg);           /* warm cream page background */
+      --bg-dark:      var(--color-dark);          /* dark navy  -  hero section */
+      --text:         var(--color-text);          /* primary text */
+      --text-muted:   var(--color-text-muted);    /* secondary text */
+      --accent:       var(--color-accent);        /* links, labels, CTAs */
+      --accent-light: var(--color-accent-light);  /* accent tint for badges */
+      --card-bg:      var(--color-surface);       /* white card / panel bg */
+      --border:       var(--color-border);        /* dividers and borders */
+      --serif:        var(--font-serif);
+      --sans:         var(--font-sans);
+      /* ─── TYPE SCALE ─────────────────────────────────────────────── */
+      --fs-label:   var(--text-label);
+      --fs-caption: var(--text-small);
+      --fs-body:    var(--text-body);
+      --fs-sub:     1.0625rem;
+      --fs-h3:      var(--text-h3);
+      --fs-h2:      var(--text-h2);
+      --fs-h1:      var(--text-h1);
+      --lh-tight:   var(--leading-tight);
+      --lh-heading: var(--leading-snug);
+      --lh-body:    var(--leading-relaxed);
+    }
+    html { scroll-behavior: smooth; }
+    body { font-family: var(--sans); background: var(--bg); color: var(--text); line-height: 1.6; -webkit-font-smoothing: antialiased; }
+
+    nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 20px 60px; background: var(--color-nav-dark); backdrop-filter: blur(12px);
+    }
+    .nav-logo { font-family: var(--sans); font-weight: 600; font-size: var(--fs-sub); color: var(--color-bg); text-decoration: none; }
+    .nav-back { font-size: var(--fs-caption); font-weight: 500; color: var(--color-cream-75); text-decoration: none; display: flex; align-items: center; gap: 6px; }
+    .nav-back:hover { color: var(--color-bg); text-decoration: underline; }
+
+    /* HERO */
+    .case-hero {
+      background: var(--bg-dark); color: var(--color-text-on-dark);
+      padding: 120px 60px 60px; display: grid; grid-template-columns: 1fr 1fr; gap: 60px; align-items: center;
+      min-height: 78vh; max-height: 88vh; overflow: hidden;
+    }
+    .case-hero h1 { font-family: var(--sans); font-weight: 600; font-size: var(--fs-h1); line-height: var(--lh-tight); letter-spacing: -.02em; margin-bottom: 16px; }
+    .case-hero-sub { font-size: var(--fs-body); color: #ffffff; font-weight: 500; letter-spacing: .04em; margin-bottom: 20px; }
+    .case-hero-tags { display: flex; flex-wrap: wrap; gap: 8px; }
+    .case-hero-tag { display: inline-block; font-size: var(--fs-label); font-weight: 400; letter-spacing: .12em; text-transform: uppercase; color: #D4D6FF; background: rgba(168, 171, 255, 0.22); border: 1px solid rgba(168, 171, 255, 0.38); padding: 5px 12px; border-radius: 100px; }
+    .hero-img-placeholder {
+      width: 100%; aspect-ratio: 16/9; border-radius: 12px; background: var(--color-nav-border-dark);
+      border: 1px solid var(--color-nav-border-dark); display: flex; align-items: center; justify-content: center;
+      color: var(--color-white-60); font-size: var(--fs-caption); text-align: center; padding: 20px;
+    }
+
+    /* CONTENT */
+    .case-body { max-width: 1040px; margin: 0 auto; padding: 80px 60px; }
+    .case-body section { margin-bottom: 72px; }
+
+    .section-label { font-size: var(--fs-label); font-weight: 600; letter-spacing: .14em; text-transform: uppercase; color: var(--accent); margin-bottom: 10px; }
+    h2 { font-family: var(--sans); font-weight: 600; font-size: var(--fs-h2); letter-spacing: -.02em; margin-bottom: 20px; line-height: var(--lh-heading); }
+    p { font-size: var(--fs-body); color: var(--text-muted); line-height: var(--lh-body); margin-bottom: 16px; }
+    p:last-child { margin-bottom: 0; }
+
+    /* ROLE PILLS */
+    .role-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 8px; margin-top: 32px; }
+    .role-pill { background: none; padding: 16px 8px; text-align: center; }
+    .role-pill-icon { width: 64px; height: 64px; margin: 0 auto 12px; color: var(--color-role-pill); display: flex; align-items: center; justify-content: center; }
+    .role-pill-icon svg { width: 100%; height: 100%; }
+    .role-pill-label { font-size: var(--fs-label); font-weight: 600; color: var(--text); line-height: 1.4; }
+
+    /* PROCESS */
+    .process-steps { display: grid; grid-template-columns: 1fr 1fr; gap: 28px; margin-top: 32px; }
+    .process-step { background: var(--card-bg); border: 1px solid var(--border); border-radius: 12px; padding: 28px; }
+    .step-number { font-size: var(--fs-label); font-weight: 700; letter-spacing: .1em; text-transform: uppercase; color: var(--accent); margin-bottom: 10px; }
+    .step-title { font-family: var(--sans); font-weight: 600; font-size: var(--fs-sub); margin-bottom: 10px; color: var(--text); }
+    .step-body { font-size: var(--fs-body); color: var(--text-muted); line-height: var(--lh-body); margin: 0; }
+
+    /* CHALLENGE */
+    .challenge { background: var(--card-bg); border: 1px solid var(--border); border-radius: 16px; overflow: hidden; margin-bottom: 28px; padding: 28px; }
+    .challenge-header { padding: 0; text-align: left; }
+    .challenge-num { font-size: var(--fs-label); font-weight: 700; letter-spacing: .14em; text-transform: uppercase; color: var(--accent); margin-bottom: 10px; display: block; }
+    .challenge h3 { font-family: var(--sans); font-weight: 600; font-size: var(--fs-h3); letter-spacing: -.01em; margin-bottom: 0; color: var(--text); line-height: var(--lh-heading); }
+    .challenge p { font-size: var(--fs-body); color: var(--text-muted); line-height: var(--lh-body); padding: 0; text-align: left; }
+    .challenge p:first-of-type { padding-top: 12px; }
+    .solution-label { display: inline-block; font-size: var(--fs-label); font-weight: 700; letter-spacing: .1em; text-transform: uppercase; color: var(--color-success); background: var(--color-success-bg); padding: 4px 12px; border-radius: 100px; margin: 24px 0 10px; }
+    .challenge-footer { padding: 0; }
+    /* Before / After image pair  -  always equal height, always aligned */
+    .before-after { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; padding: 0 32px 28px; }
+    .before-after-item { display: flex; flex-direction: column; gap: 8px; }
+    .before-after-item img { width: 100%; aspect-ratio: 16/9; object-fit: cover; border-radius: 8px; display: block; }
+    .before-after-item .ba-label { font-size: var(--fs-label); font-weight: 600; letter-spacing: .08em; text-transform: uppercase; color: var(--text-muted); text-align: center; }
+
+    /* IMAGE PLACEHOLDER */
+    .img-placeholder {
+      width: 100%; aspect-ratio: 16/9; background: linear-gradient(135deg, var(--color-placeholder-a) 0%, var(--color-placeholder-b) 100%);
+      border-radius: 10px; display: flex; flex-direction: column; align-items: center; justify-content: center;
+      color: var(--text-muted); font-size: var(--fs-caption); text-align: center; padding: 20px; gap: 8px; margin: 20px 0;
+    }
+    .img-placeholder .img-icon { font-size: 2rem; opacity: .4; }
+    .img-placeholder .img-caption { font-size: var(--fs-label); color: var(--text-muted); opacity: .7; max-width: 280px; }
+    .img-row { display: grid; gap: 16px; margin: 20px 32px; }
+    .img-row.cols-2 { grid-template-columns: 1fr 1fr; }
+    .img-row.cols-3 { grid-template-columns: repeat(3, 1fr); }
+    .img-row.full { margin: 20px 0; }
+    .img-placeholder.mobile { aspect-ratio: 9/16; max-width: 160px; }
+    .mobile-row { display: flex; gap: 12px; flex-wrap: wrap; padding: 0 32px 28px; }
+
+    /* CAROUSEL */
+    .carousel-wrap { position: relative; }
+    .carousel-btn { position: absolute; top: 50%; transform: translateY(-60%); z-index: 10; width: 36px; height: 36px; background: var(--color-surface); border: 1px solid var(--color-border); border-radius: 50%; cursor: pointer; display: flex; align-items: center; justify-content: center; box-shadow: 0 2px 8px rgba(0,0,0,.10); transition: background .15s, box-shadow .15s, opacity .15s; font-size: 1rem; color: var(--text); line-height: 1; }
+    .carousel-btn:hover:not(:disabled) { background: var(--accent); color: #fff; border-color: var(--accent); }
+    .carousel-btn:disabled { opacity: 0; cursor: default; pointer-events: none; }
+    .carousel-btn.prev-btn { left: 4px; }
+    .carousel-btn.next-btn { right: 4px; }
+    .mobile-carousel { display: flex; gap: 14px; overflow-x: auto; scroll-snap-type: x mandatory; -webkit-overflow-scrolling: touch; padding: 8px 32px 20px; scrollbar-width: none; cursor: grab; user-select: none; }
+    .mobile-carousel::-webkit-scrollbar { display: none; }
+    .mobile-carousel.dragging { cursor: grabbing; scroll-snap-type: none; }
+    .mc-item { flex: 0 0 auto; display: flex; flex-direction: column; align-items: center; gap: 8px; scroll-snap-align: start; }
+    .mc-item img { height: 300px; width: auto; border-radius: 10px; border: 1px solid var(--color-border); cursor: zoom-in; transition: transform .18s, box-shadow .18s; pointer-events: none; }
+    .mc-item.ready img { pointer-events: auto; }
+    @media (max-width: 600px) {
+      .mc-item img { height: 240px; }
+      .mobile-carousel { padding: 8px 12px 16px; }
+    }
+
+    /* DIVIDER */
+    hr { border: none; border-top: 1px solid var(--border); margin: 48px 0; }
+
+    /* LIGHTBOX */
+    #lb-overlay {
+      display: none; position: fixed; inset: 0; z-index: 1000;
+      background: rgba(10, 12, 22, .95); backdrop-filter: blur(6px);
+      align-items: center; justify-content: center; flex-direction: column;
+    }
+    #lb-overlay.active { display: flex; }
+    #lb-img-wrap { position: relative; max-width: 92vw; max-height: 82vh; display: flex; align-items: center; justify-content: center; }
+    #lb-img {
+      max-width: 92vw; max-height: 80vh; border-radius: 10px; object-fit: contain;
+      box-shadow: 0 24px 80px rgba(0,0,0,.6); display: block;
+      transition: opacity .18s ease;
+    }
+    #lb-caption { margin-top: 12px; font-size: var(--fs-caption); color: rgba(244,239,229,.75); text-align: center; max-width: 600px; }
+    /* Zoom */
+    #lb-zoom-controls { display: flex; gap: 6px; align-items: center; position: fixed; bottom: 28px; left: 50%; transform: translateX(-50%); z-index: 1002; }
+    .lb-zoom-btn { background: rgba(255,255,255,.12); border: 1px solid rgba(255,255,255,.2); color: #fff; width: 32px; height: 32px; border-radius: 6px; font-size: .95rem; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: background .15s; }
+    .lb-zoom-btn:hover { background: rgba(255,255,255,.22); }
+    .lb-zoom-btn:disabled { opacity: .35; cursor: default; }
+    .lb-zoom-label { font-size: .7rem; color: rgba(244,239,229,.6); min-width: 40px; text-align: center; }
+    #lb-img { transform-origin: center; transition: opacity .18s ease, transform .2s ease; cursor: zoom-in; }
+    #lb-img.zoomed { cursor: zoom-out; }
+    #lb-counter {
+      position: fixed; top: 22px; left: 50%; transform: translateX(-50%);
+      font-size: var(--fs-label); font-weight: 600; letter-spacing: .08em;
+      color: rgba(244,239,229,.95); background: rgba(255,255,255,.12);
+      border: 1px solid rgba(255,255,255,.2); padding: 5px 16px; border-radius: 100px;
+      z-index: 1002;
+    }
+    .lb-btn {
+      position: fixed; top: 50%; transform: translateY(-50%);
+      background: rgba(255,255,255,.1); border: 1px solid rgba(255,255,255,.15);
+      color: #fff; width: 52px; height: 52px; border-radius: 50%;
+      font-size: 1.4rem; cursor: pointer; display: flex; align-items: center; justify-content: center;
+      transition: background .15s; z-index: 1001; user-select: none;
+    }
+    .lb-btn:hover { background: rgba(255,255,255,.2); }
+    #lb-prev { left: 20px; }
+    #lb-next { right: 20px; }
+    #lb-close {
+      position: fixed; top: 20px; right: 24px; z-index: 1001;
+      background: rgba(255,255,255,.1); border: 1px solid rgba(255,255,255,.15);
+      color: #fff; width: 44px; height: 44px; border-radius: 50%;
+      font-size: 1.2rem; cursor: pointer; display: flex; align-items: center; justify-content: center;
+      transition: background .15s;
+    }
+    #lb-close:hover { background: rgba(255,255,255,.2); }
+    [data-lightbox] { cursor: zoom-in; }
+
+    /* NAV BETWEEN PROJECTS */
+    .project-nav { display: flex; justify-content: space-between; align-items: center; padding: 40px 60px; border-top: 1px solid var(--border); background: var(--card-bg); }
+    .project-nav a { text-decoration: none; display: flex; flex-direction: column; gap: 4px; }
+    .project-nav a.prev { align-items: flex-start; }
+    .project-nav a.next { align-items: flex-end; }
+    .pn-label { font-size: var(--fs-label); font-weight: 600; letter-spacing: .1em; text-transform: uppercase; color: var(--text-muted); }
+    .pn-title { font-family: var(--sans); font-weight: 600; font-size: var(--fs-sub); color: var(--text); }
+    .project-nav a:hover .pn-title { color: var(--accent); }
+
+    @media (max-width: 900px) {
+      nav { padding: 16px 24px; }
+      .case-hero { grid-template-columns: 1fr; min-height: auto; padding: 100px 32px 48px; }
+      .case-body { padding: 48px 32px; }
+      .role-grid { grid-template-columns: repeat(2, 1fr); }
+      .process-steps { grid-template-columns: 1fr; }
+      .img-row.cols-2, .img-row.cols-3 { grid-template-columns: 1fr; }
+      .before-after { grid-template-columns: 1fr; padding: 0 0 28px; }
+      .img-block { padding: 0 0 28px; }
+      .project-nav { padding: 32px 24px; flex-direction: column; gap: 20px; }
+    }
+
+    @media (max-width: 600px) {
+      nav { padding: 16px 20px; }
+      .case-hero { padding: 88px 20px 40px; }
+      .case-hero h1 { font-size: clamp(2rem, 8vw, 3rem); }
+      .case-body { padding: 40px 20px; }
+      .case-hero-tags { gap: 6px; }
+      .case-hero-tag { font-size: .55rem; padding: 4px 10px; }
+      .role-grid { grid-template-columns: repeat(2, 1fr); }
+      .img-block { padding: 0 0 24px; }
+      .img-row { margin: 20px 0; }
+      .before-after { padding: 0 0 24px; }
+      .process-steps { gap: 12px; }
+      .challenge { padding: 20px; }
+      .project-nav { padding: 24px 20px; }
+    }
+  </style>
+</head>
+<body>
+
+<nav>
+  <a href="../portfolio.html" class="nav-logo">Liat Vax</a>
+  <a href="../portfolio.html#projects" class="nav-back">← Back to Portfolio</a>
+</nav>
+
+<div class="case-hero">
+  <div>
+    <h1>IEC Website Redesign</h1>
+    <p class="case-hero-sub">Israel Electric Corporation</p>
+    <div class="case-hero-tags">
+      <span class="case-hero-tag">Responsive Website</span>
+      <span class="case-hero-tag">Redesign</span>
+      <span class="case-hero-tag">UX Lead</span>
+      <span class="case-hero-tag">Matrix</span>
+    </div>
+  </div>
+  <img src="images/hero.png" alt="IEC Homepage Redesign" style="width:100%;max-height:60vh;border-radius:12px;display:block;object-fit:cover;object-position:top center;align-self:center;cursor:zoom-in;" data-lightbox data-caption="IEC Homepage Redesign" />
+</div>
+
+<div class="case-body">
+
+  <section>
+    <p class="section-label">Overview</p>
+    <h2>Putting clarity and efficiency first</h2>
+    <p>An extensive redesign of the IEC's website that reflected a new approach, putting clarity and efficiency first. As part of the redesign process, we digitized complex internal and external processes such as registration, electricity bill payments, monitoring of power outages, and more.</p>
+    <p>The impact was immediate. Within days of launch, the number of people who registered and completed their tasks successfully exceeded everyone's expectations. Calls to the service center decreased significantly, and the transformation received praise throughout both general and professional forums.</p>
+  </section>
+
+  <section>
+    <p class="section-label">My Role</p>
+    <h2>Leading the end-to-end UX process</h2>
+    <p>I led the overall redesign process from the UX point of view, taking a basic one-page concept and developing it into a full, comprehensive website. This included defining process stages, designing over 100 detailed screens, solving all edge cases, and managing a cross-functional team.</p>
+    <div class="role-grid">
+
+      <!-- Concept -->
+      <div class="role-pill">
+        <div class="role-pill-icon">
+          <img src="../images/Icon/icons8-concept-80.png" alt="Concept" style="width:56px;height:56px;object-fit:contain;" / />
+        </div>
+        <div class="role-pill-label">Concept</div>
+      </div>
+
+      <!-- Detailed Design -->
+      <div class="role-pill">
+        <div class="role-pill-icon">
+          <img src="../images/Icon/icons8-design-80.png" alt="Detailed Design" style="width:56px;height:56px;object-fit:contain;" / />
+        </div>
+        <div class="role-pill-label">Detailed Design</div>
+      </div>
+
+      <!-- Team Guidance -->
+      <div class="role-pill">
+        <div class="role-pill-icon">
+          <img src="../images/Icon/icons8-collaboration-80.png" alt="Team Guidance" style="width:56px;height:56px;object-fit:contain;" / />
+        </div>
+        <div class="role-pill-label">Team Guidance</div>
+      </div>
+
+      <!-- Info Architecture -->
+      <div class="role-pill">
+        <div class="role-pill-icon">
+          <img src="../images/Icon/icons8-flow-80.png" alt="Info Architecture" style="width:56px;height:56px;object-fit:contain;" / />
+        </div>
+        <div class="role-pill-label">Info Architecture</div>
+      </div>
+
+      <!-- Research -->
+      <div class="role-pill">
+        <div class="role-pill-icon">
+          <img src="../images/Icon/icons8-research-80.png" alt="Research" style="width:56px;height:56px;object-fit:contain;" / />
+        </div>
+        <div class="role-pill-label">Research</div>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <p class="section-label">Design Process</p>
+    <h2>How we got there</h2>
+    <div class="process-steps">
+      <div class="process-step">
+        <p class="step-number">01: Research</p>
+        <h3 class="step-title">Understanding users & systems</h3>
+        <p class="step-body">Each project stage began with comprehensive research, interviews, reference analysis, and deep dives into the systems we'd be redesigning.</p>
+      </div>
+      <div class="process-step">
+        <p class="step-number">02: Concept</p>
+        <h3 class="step-title">Accessibility & registration as the core</h3>
+        <p class="step-body">The main concept was built around making the IEC website more accessible and encouraging registration  -  exposing users to a world of added value they didn't know existed.</p>
+      </div>
+      <div class="process-step">
+        <p class="step-number">03: Detailed Design</p>
+        <h3 class="step-title">100+ screens covering every edge case</h3>
+        <p class="step-body">I created dozens of detailed design screens that covered every flow variation and edge case  -  ensuring no user would fall through the cracks.</p>
+      </div>
+      <div class="process-step">
+        <p class="step-number">04: Guiding the Team</p>
+        <h3 class="step-title">From wireframe to shipped product</h3>
+        <p class="step-body">Working closely with UI designers and developers to implement the UX wireframes, solve implementation problems, and maintain the experience through to launch.</p>
+      </div>
+    </div>
+  </section>
+
+  <hr />
+
+  <section>
+    <p class="section-label">Challenges</p>
+    <h2>The hard problems we solved</h2>
+
+    <p class="challenge-num">Challenge 01</p>
+    <div class="challenge">
+      <div class="challenge-header">
+        <h3>IEC has so much more to offer</h3>
+      </div>
+      <p>IEC's website offers effective and innovative solutions, but users need to register to benefit from them. Users perceived the site as a bureaucratic chore  -  pay quickly and leave. Our challenge: change that mindset and reveal the added value of signing in.</p>
+      <p class="solution-label">How we solved it</p>
+      <div class="challenge-footer">
+        <p>We changed the weight of each element to make signing in the natural, obvious solution to every task. We worked across three dimensions:</p>
+        <p><strong>1.</strong> Integrating sign-in as part of every action on the site.</p>
+        <p><strong>2.</strong> Redesigning the sign-in process to be more transparent and easier to complete.</p>
+        <p><strong>3.</strong> Offering registration from multiple points throughout the site  -  recurring but unobtrusive.</p>
+      </div>
+      <div class="before-after">
+        <div class="before-after-item">
+          <img src="images/before-old-site.avif" alt="Before: Old IEC website" data-lightbox data-caption="Before: Old IEC website" />
+          <span class="ba-label">Before</span>
+        </div>
+        <div class="before-after-item">
+          <img src="images/hero.png" alt="After: New homepage" data-lightbox data-caption="After: New IEC homepage" />
+          <span class="ba-label">After</span>
+        </div>
+      </div>
+      <p style="padding: 14px 32px 0;">We also rearchitected the sign-in process itself. First, we mapped the full system  -  learning the intricate web of entity connections and dependencies. Then we rearranged them so the backend could do the heavy lifting, asking the user as few questions as possible.</p>
+      <p style="padding: 0 32px 12px;">The result: an easy, intuitive sign-in process that made users feel recognised  -  all we needed were a few more details to upgrade them to full digital client status.</p>
+      <p style="font-size:var(--fs-label);font-weight:600;text-transform:uppercase;letter-spacing:.08em;color:var(--accent);padding:4px 32px 12px;">A clean and simple registration process</p>
+      <div class="carousel-wrap">
+        <button class="carousel-btn prev-btn" id="reg-prev" disabled aria-label="Previous screen">&#8249;</button>
+        <button class="carousel-btn next-btn" id="reg-next" aria-label="Next screen">&#8250;</button>
+        <div class="mobile-carousel" id="regCarousel">
+          <div class="mc-item ready">
+            <img src="https://static.wixstatic.com/media/612bd8_ac1c640fdb2744beb823ab6b42a6f674~mv2.png" alt="Sign in screen" data-lightbox data-caption="Registration: Sign in" />
+          </div>
+          <div class="mc-item ready">
+            <img src="https://static.wixstatic.com/media/612bd8_67ff104378ec4f73a6a7de0f7a8ca291~mv2.png" alt="Signup screen" data-lightbox data-caption="Registration: Signup" />
+          </div>
+          <div class="mc-item ready">
+            <img src="https://static.wixstatic.com/media/612bd8_1ccdf3aff86b4fadaccda2c22b439bd3~mv2.png" alt="Account number screen" data-lightbox data-caption="Registration: Account number" />
+          </div>
+          <div class="mc-item ready">
+            <img src="https://static.wixstatic.com/media/612bd8_cdfa3d3b44834a619af478e99b51b282~mv2.png" alt="Signup form screen" data-lightbox data-caption="Registration: Signup form" />
+          </div>
+          <div class="mc-item ready">
+            <img src="images/registration-otp.png" alt="OTP verification screen" data-lightbox data-caption="Registration: SMS verification" />
+          </div>
+          <div class="mc-item ready">
+            <img src="images/registration-success.png" alt="Registration success screen" data-lightbox data-caption="Registration: Success" />
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <p class="challenge-num">Challenge 02</p>
+    <div class="challenge">
+      <div class="challenge-header">
+        <h3>No one enjoys paying, so at least let it be easy</h3>
+      </div>
+      <p>The most common reason users visited the IEC site was to pay a bill. The payment process was outdated and at odds with the new website's spirit. We had to redesign it from the ground up  -  knowing most payments happen on mobile.</p>
+      <p class="solution-label">How we solved it</p>
+      <div class="challenge-footer">
+        <p>We took a <strong>mobile-first approach</strong> and designed a clean, step-by-step payment flow where each screen focuses the user on exactly one task.</p>
+        <p>We researched payment flows widely, looking for the most innovative solution that still stayed within familiar conventions. We prevented mistakes by showing one question at a time, and created an intuitive connection between digital and physical by animating credit card input in real time.</p>
+      </div>
+      <div class="img-row full" style="padding: 0 32px 28px;">
+        <p style="font-size:var(--fs-label);font-weight:600;text-transform:uppercase;letter-spacing:.08em;color:var(--accent);padding:0 0 12px;">Payment process  -  logged in user</p>
+        <div style="display:flex; gap:12px; flex-wrap:wrap;">
+          <img src="images/payment-1.png" alt="Payment step 1" style="height:240px;border-radius:8px;object-fit:cover;" data-lightbox data-caption="Payment process: step 1" />
+          <img src="images/payment-2.png" alt="Payment step 2" style="height:240px;border-radius:8px;object-fit:cover;" data-lightbox data-caption="Payment process: step 2" />
+          <img src="images/payment-3.png" alt="Payment step 3" style="height:240px;border-radius:8px;object-fit:cover;" data-lightbox data-caption="Payment process: step 3" />
+          <img src="images/payment-4.png" alt="Payment step 4" style="height:240px;border-radius:8px;object-fit:cover;" data-lightbox data-caption="Payment process: step 4" />
+        </div>
+      </div>
+    </div>
+  </section>
+
+</div>
+
+<div class="project-nav">
+  <a href="../amwell/amwell.html" class="prev">
+    <span class="pn-label">← Previous</span>
+    <span class="pn-title">American Well</span>
+  </a>
+  <a href="../idf/idf.html" class="next">
+    <span class="pn-label">Next →</span>
+    <span class="pn-title">IDF Emergency Instructors</span>
+  </a>
+</div>
+
+<!-- LIGHTBOX -->
+<div id="lb-overlay" role="dialog" aria-modal="true" aria-label="Image viewer">
+  <button id="lb-close" aria-label="Close">&times;</button>
+  <button class="lb-btn" id="lb-prev" aria-label="Previous image">&#8592;</button>
+  <div id="lb-img-wrap">
+    <img id="lb-img" src="" alt="" / data-lightbox data-caption="" />
+  </div>
+  <button class="lb-btn" id="lb-next" aria-label="Next image">&#8594;</button>
+  <div id="lb-caption"></div>
+  <div id="lb-counter"></div>
+  <div id="lb-zoom-controls">
+    <button class="lb-zoom-btn" id="lb-zoom-out" aria-label="Zoom out" title="Zoom out">&#x2212;</button>
+    <span class="lb-zoom-label" id="lb-zoom-label">100%</span>
+    <button class="lb-zoom-btn" id="lb-zoom-in" aria-label="Zoom in" title="Zoom in">&#x2b;</button>
+  </div>
+</div>
+
+<script>
+  (function() {
+    var images = [];
+    var current = 0;
+
+    function buildGallery() {
+      var imgs = document.querySelectorAll('[data-lightbox]');
+      imgs.forEach(function(img, i) {
+        images.push({ src: img.src, caption: img.getAttribute('data-caption') || img.alt || '' });
+        img.addEventListener('click', function() { openAt(i); });
+      });
+    }
+
+    function openAt(idx) {
+      current = idx;
+      showImage(idx);
+      document.getElementById('lb-overlay').classList.add('active');
+      document.body.style.overflow = 'hidden';
+    }
+
+    function showImage(idx) {
+      var lbImg = document.getElementById('lb-img');
+      lbImg.style.opacity = '0';
+      var entry = images[idx];
+      lbImg.onload = function() { lbImg.style.opacity = '1'; };
+      lbImg.src = entry.src;
+      lbImg.alt = entry.caption;
+      document.getElementById('lb-caption').textContent = entry.caption;
+      document.getElementById('lb-counter').textContent = (idx + 1) + ' / ' + images.length;
+    }
+
+    function close() {
+      document.getElementById('lb-overlay').classList.remove('active');
+      document.body.style.overflow = '';
+    }
+
+    function prev() { current = (current - 1 + images.length) % images.length; showImage(current); }
+    function next() { current = (current + 1) % images.length; showImage(current); }
+
+    document.getElementById('lb-close').addEventListener('click', close);
+    document.getElementById('lb-prev').addEventListener('click', prev);
+    document.getElementById('lb-next').addEventListener('click', next);
+    document.getElementById('lb-overlay').addEventListener('click', function(e) {
+      if (e.target === this) close();
+    });
+
+    document.addEventListener('keydown', function(e) {
+      var ov = document.getElementById('lb-overlay');
+      if (!ov.classList.contains('active')) return;
+      if (e.key === 'Escape') close();
+      if (e.key === 'ArrowLeft') prev();
+      if (e.key === 'ArrowRight') next();
+    });
+
+    // Touch swipe
+    var touchStartX = 0;
+    document.getElementById('lb-img-wrap').addEventListener('touchstart', function(e) {
+      touchStartX = e.touches[0].clientX;
+    }, { passive: true });
+    document.getElementById('lb-img-wrap').addEventListener('touchend', function(e) {
+      var dx = e.changedTouches[0].clientX - touchStartX;
+      if (Math.abs(dx) > 40) { dx < 0 ? next() : prev(); }
+    }, { passive: true });
+
+    buildGallery();
+
+    // ── ZOOM ──────────────────────────────────────────────────────────────────
+    var zoom = 1;
+    var zImg   = document.getElementById('lb-img');
+    var zWrap  = document.getElementById('lb-img-wrap');
+    var zLabel = document.getElementById('lb-zoom-label');
+    var zIn    = document.getElementById('lb-zoom-in');
+    var zOut   = document.getElementById('lb-zoom-out');
+
+    function setZoom(z) {
+      zoom = Math.min(4, Math.max(1, +z.toFixed(4)));
+      zImg.style.transform = zoom === 1 ? '' : 'scale(' + zoom + ')';
+      zLabel.textContent   = Math.round(zoom * 100) + '%';
+      zImg.classList.toggle('zoomed', zoom > 1);
+      zOut.disabled = zoom <= 1;
+      zIn.disabled  = zoom >= 4;
+    }
+    function resetZoom() { setZoom(1); }
+
+    zIn.addEventListener ('click', function() { setZoom(zoom * 1.5); });
+    zOut.addEventListener('click', function() { setZoom(zoom / 1.5); });
+    zImg.addEventListener('click', function(e) { e.stopPropagation(); setZoom(zoom > 1 ? 1 : 2.5); });
+    zWrap.addEventListener('wheel', function(e) { e.preventDefault(); setZoom(zoom * (e.deltaY < 0 ? 1.13 : 0.88)); }, { passive: false });
+
+    document.getElementById('lb-prev').addEventListener('click', resetZoom);
+    document.getElementById('lb-next').addEventListener('click', resetZoom);
+    document.getElementById('lb-close').addEventListener('click', resetZoom);
+    document.addEventListener('keydown', function(e) {
+      if (!document.getElementById('lb-overlay').classList.contains('active')) return;
+      if (e.key === 'ArrowLeft' || e.key === 'ArrowRight' || e.key === 'Escape') resetZoom();
+    });
+
+    setZoom(1);
+  })();
+</script>
+
+
+<!-- ── EASTER EGG ── -->
+<style>
+  .case-hero-tag { position: relative; display: inline-flex; align-items: center; gap: 6px; }
+  .tag-x { background: none; border: none; cursor: pointer; color: rgba(212,214,255,.5); font-size: .8rem; line-height: 1; padding: 0; margin: 0; transition: color .2s; font-family: inherit; }
+  .case-hero-tag:hover .tag-x { color: #fff; }
+  #easter-egg { position: fixed; inset: 0; z-index: 99999; pointer-events: none; visibility: hidden; }
+  #easter-egg.active { pointer-events: all; visibility: visible; }
+  .egg-panel { position: absolute; top: 0; height: 100%; width: 50%; background: #0e0e1f; transition: transform .9s cubic-bezier(.76,0,.24,1); z-index: 2; overflow: hidden; will-change: transform; }
+  .egg-panel::after { content: ''; position: absolute; inset: 0; background: repeating-linear-gradient(0deg,transparent,transparent 39px,rgba(255,255,255,.025) 40px); pointer-events: none; }
+  .egg-panel-left { left: 0; }
+  .egg-panel-right { right: 0; }
+  #easter-egg.splitting .egg-panel-left { transform: translateX(-100%); }
+  #easter-egg.splitting .egg-panel-right { transform: translateX(100%); }
+  .egg-seam { position: absolute; left: 50%; top: 0; width: 3px; height: 100%; transform: translateX(-50%); background: linear-gradient(to bottom,transparent 0%,#a8abff 20%,#fff 50%,#a8abff 80%,transparent 100%); z-index: 3; pointer-events: none; animation: seam-pulse 1.2s ease-out forwards; }
+  @keyframes seam-pulse { 0%{opacity:0} 15%{opacity:1} 60%{opacity:1} 100%{opacity:0} }
+  .egg-bg { position: absolute; inset: 0; z-index: 0; background: radial-gradient(ellipse at 50% 45%,#1e1b4b 0%,#0a0a1a 70%); }
+  .egg-stars { position: absolute; inset: 0; z-index: 1; overflow: hidden; pointer-events: none; }
+  .egg-star { position: absolute; border-radius: 50%; background: #fff; animation: star-float 3s ease-in-out infinite; }
+  @keyframes star-float { 0%,100%{opacity:.15;transform:translateY(0)} 50%{opacity:.7;transform:translateY(-6px)} }
+  .egg-message { position: absolute; inset: 0; z-index: 4; display: flex; align-items: center; justify-content: center; opacity: 0; transition: opacity .5s .65s; pointer-events: none; }
+  #easter-egg.splitting .egg-message { opacity: 1; pointer-events: all; }
+  .egg-content { text-align: center; padding: 48px 40px; max-width: 540px; position: relative; z-index: 1; }
+  .egg-gif { width: 150px; height: auto; display: block; margin: 0 auto 24px; animation: egg-bounce .7s .6s cubic-bezier(.34,1.56,.64,1) both; }
+  @keyframes egg-bounce { from{transform:scale(0) rotate(-15deg);opacity:0} to{transform:scale(1) rotate(0);opacity:1} }
+  .egg-title { font-size: 1.8rem; font-weight: 700; color: #fff; letter-spacing: -.02em; margin-bottom: 16px; line-height: 1.2; }
+  .egg-title span { color: #a8abff; }
+  .egg-body { font-size: 1rem; color: rgba(255,255,255,.72); line-height: 1.75; margin-bottom: 32px; }
+  .egg-divider { width: 40px; height: 2px; background: #a8abff; margin: 0 auto 28px; border-radius: 2px; }
+  .egg-contact-label { font-size: .65rem; font-weight: 700; letter-spacing: .14em; text-transform: uppercase; color: #a8abff; margin-bottom: 16px; }
+  .egg-contacts { display: flex; flex-direction: column; gap: 10px; margin-bottom: 36px; }
+  .egg-contacts a { color: #fff; text-decoration: none; font-size: .95rem; display: flex; align-items: center; justify-content: center; gap: 8px; opacity: .85; transition: opacity .2s, color .2s; }
+  .egg-contacts a:hover { opacity: 1; color: #a8abff; }
+  .egg-contacts a .ci { font-size: .8rem; opacity: .6; }
+  .egg-close-btn { position: absolute; top: 16px; right: 16px; width: 36px; height: 36px; display: flex; align-items: center; justify-content: center; background: rgba(255,255,255,.08); border: 1px solid rgba(255,255,255,.18); color: rgba(255,255,255,.7); font-size: 1.2rem; border-radius: 50%; cursor: pointer; transition: background .2s, color .2s, border-color .2s; font-family: inherit; line-height: 1; padding: 0; }
+  .egg-close-btn:hover { background: rgba(255,255,255,.14); color: #fff; border-color: rgba(255,255,255,.35); }
+</style>
+<div id="easter-egg" role="dialog" aria-modal="true" aria-label="Easter egg">
+  <div class="egg-bg"></div>
+  <div class="egg-stars" id="egg-stars"></div>
+  <div class="egg-panel egg-panel-left"></div>
+  <div class="egg-seam"></div>
+  <div class="egg-panel egg-panel-right"></div>
+  <div class="egg-message">
+    <div class="egg-content">
+      <img class="egg-gif" src="../images/ester%20eggs%20gif.gif" alt="Easter eggs" />
+      <h2 class="egg-title">You found my <span>Easter egg.</span></h2>
+      <p class="egg-body">You are exactly the people I want to work with, the ones who get carried away with the experience and have to understand what each component does. We'd either build something great together or spend 3 hours brainstorming what the user is actually trying to do. Probably both.</p>
+      <div class="egg-divider"></div>
+      <p class="egg-contact-label">Let's talk</p>
+      <div class="egg-contacts">
+        <a href="mailto:liatvax@gmail.com">liatvax@gmail.com</a>
+        <a href="tel:+972522203315">+972 52-220-3315</a>
+        <a href="https://il.linkedin.com/in/liat-vax" target="_blank" rel="noopener">linkedin.com/in/liat-vax</a>
+      </div>
+      <button class="egg-close-btn" id="egg-close" aria-label="Close">&#x2715;</button>
+    </div>
+  </div>
+</div>
+<script>
+  // CAROUSEL
+  (function(){
+    var carousels = {
+      regCarousel: { prev: 'reg-prev', next: 'reg-next' }
+    };
+
+    function updateBtns(el, prevBtn, nextBtn) {
+      var atStart = el.scrollLeft <= 8;
+      var atEnd   = el.scrollLeft + el.clientWidth >= el.scrollWidth - 8;
+      prevBtn.disabled = atStart;
+      nextBtn.disabled = atEnd;
+    }
+
+    Object.keys(carousels).forEach(function(id){
+      var el      = document.getElementById(id);
+      var cfg     = carousels[id];
+      var prevBtn = document.getElementById(cfg.prev);
+      var nextBtn = document.getElementById(cfg.next);
+      if(!el || !prevBtn || !nextBtn) return;
+
+      function upd() { updateBtns(el, prevBtn, nextBtn); }
+
+      prevBtn.addEventListener('click', function(){
+        var itemW = el.querySelector('.mc-item') ? el.querySelector('.mc-item').offsetWidth + 14 : 200;
+        el.scrollBy({ left: -itemW, behavior: 'smooth' });
+      });
+      nextBtn.addEventListener('click', function(){
+        var itemW = el.querySelector('.mc-item') ? el.querySelector('.mc-item').offsetWidth + 14 : 200;
+        el.scrollBy({ left: itemW, behavior: 'smooth' });
+      });
+
+      var scrollTimer;
+      el.addEventListener('scroll', function(){
+        upd();
+        clearTimeout(scrollTimer);
+        scrollTimer = setTimeout(upd, 150);
+      }, { passive: true });
+      el.addEventListener('scrollend', upd);
+      // re-check when images load (CDN images may shift scrollWidth)
+      el.querySelectorAll('img').forEach(function(img){
+        img.addEventListener('load', upd);
+      });
+      window.addEventListener('load', upd);
+      setTimeout(upd, 100);
+      setTimeout(upd, 500);
+
+      // Click-and-drag
+      var startX, scrollLeft0, dragging = false, moved = false;
+      el.addEventListener('mousedown', function(e){
+        dragging = true; moved = false;
+        startX = e.pageX - el.offsetLeft;
+        scrollLeft0 = el.scrollLeft;
+        el.classList.add('dragging');
+      });
+      window.addEventListener('mousemove', function(e){
+        if(!dragging) return;
+        e.preventDefault();
+        var walk = (e.pageX - el.offsetLeft - startX) * 1.4;
+        if(Math.abs(walk) > 4) moved = true;
+        el.scrollLeft = scrollLeft0 - walk;
+        upd();
+      });
+      window.addEventListener('mouseup', function(){
+        if(!dragging) return;
+        dragging = false;
+        el.classList.remove('dragging');
+        if(moved){
+          el.querySelectorAll('.mc-item').forEach(function(i){ i.classList.remove('ready'); });
+          setTimeout(function(){
+            el.querySelectorAll('.mc-item').forEach(function(i){ i.classList.add('ready'); });
+          }, 200);
+        }
+        upd();
+      });
+
+      el.querySelectorAll('.mc-item').forEach(function(i){ i.classList.add('ready'); });
+    });
+  })();
+</script>
+<script>
+  (function(){
+    var egg=document.getElementById("easter-egg"),closeBtn=document.getElementById("egg-close"),starsEl=document.getElementById("egg-stars");
+    for(var i=0;i<55;i++){var s=document.createElement("div");s.className="egg-star";var sz=Math.random()*2.5+1;s.style.cssText="width:"+sz+"px;height:"+sz+"px;left:"+(Math.random()*100)+"%%;top:"+(Math.random()*100)+"%%;animation-delay:"+(Math.random()*3)+"s;animation-duration:"+(2.5+Math.random()*2)+"s;";starsEl.appendChild(s);}
+    function openEgg(){egg.classList.add("active");requestAnimationFrame(function(){requestAnimationFrame(function(){egg.classList.add("splitting");});});}
+    function closeEgg(){egg.classList.remove("splitting");setTimeout(function(){egg.classList.remove("active");},900);}
+    document.querySelectorAll(".case-hero-tag").forEach(function(tag){var btn=document.createElement("button");btn.className="tag-x";btn.setAttribute("aria-label","Easter egg");btn.textContent="\u00d7";btn.addEventListener("click",function(e){e.preventDefault();e.stopPropagation();openEgg();});tag.appendChild(btn);});
+    closeBtn.addEventListener("click",closeEgg);
+    document.addEventListener("keydown",function(e){if(e.key==="Escape"&&egg.classList.contains("active"))closeEgg();});
+  })();
+</script>
+
+</body>
+</html>
