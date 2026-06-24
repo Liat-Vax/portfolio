@@ -192,8 +192,8 @@
       margin-bottom: 28px;
     }
     .hero-name em {
-      display: block;
-      font-style: normal;
+      display: inline;
+      font-style: italic;
       font-weight: 400;
       color: var(--color-hero-tag);
     }
@@ -923,7 +923,7 @@
     .contact-rows { border-top: 1px solid var(--line); }
     .contact-row {
       display: flex; align-items: center;
-      gap: 20px;
+      gap: 12px;
       justify-content: space-between;
       text-decoration: none; color: var(--ink);
       padding: 22px 0;
@@ -934,17 +934,17 @@
 
     .contact-row-icon {
       flex-shrink: 0;
-      width: 32px; height: 32px;
+      width: 24px; height: 24px;
       display: flex; align-items: center; justify-content: center;
     }
     .contact-row-icon img {
-      width: 28px; height: 28px;
+      width: 20px; height: 20px;
       object-fit: contain;
-      opacity: .75;
-      filter: brightness(0) invert(1);
+      opacity: .35;
+      filter: brightness(0);
       transition: opacity .2s;
     }
-    .contact-row:hover .contact-row-icon img { opacity: 1; }
+    .contact-row:hover .contact-row-icon img { opacity: .75; }
 
     .contact-row-left {
       display: flex; align-items: baseline; gap: 24px; flex: 1;
@@ -1038,6 +1038,8 @@
       /* Hero */
       #hero { padding: 100px 20px 40px; }
       .hero-eyebrow { font-size: .62rem; letter-spacing: .1em; margin-bottom: 16px; }
+      .hero-name { font-size: clamp(2rem, 10vw, 2.8rem); }
+      .hero-quote { font-size: 0.95rem; }
       #about { padding: 60px 20px; }
 
       /* Work section: disable sticky scroll, show cards stacked */
@@ -1090,8 +1092,7 @@
   <div class="hero-left">
     <p class="hero-eyebrow">Senior UX Designer · 10+ Years Experience</p>
     <h1 class="hero-name">
-      Liat<br>
-      <em>Vax</em>
+      Liat <em>Vax</em>
     </h1>
     <blockquote class="hero-quote">
       My favorite design tool is the word <strong>&ldquo;why.&rdquo;</strong><br>Every simple solution starts there.
