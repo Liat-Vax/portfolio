@@ -23,3 +23,10 @@ images/idf-research/
 images/amwell/
 images/iec/
 images/verint/
+
+# IDF source images with Hebrew filenames
+idf/images/desktop/
+idf/images/mobile/
+
+# IEC source images with Hebrew filenames
+iec/images/
