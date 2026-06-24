@@ -195,6 +195,40 @@
     .img-row { display: grid; gap: 16px; }
     .img-row.cols-2 { grid-template-columns: 1fr 1fr; }
 
+    /* ── IMAGE GALLERY ── */
+    .img-gallery { margin-top: 28px; }
+    .img-gallery-main { margin-bottom: 12px; }
+    .img-gallery-main img {
+      width: 100%; border-radius: 12px; display: block;
+      border: 1px solid var(--border);
+      box-shadow: 0 4px 24px rgba(26,32,53,.08);
+    }
+    .img-gallery-grid {
+      display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-top: 12px;
+    }
+    .img-gallery-item { display: flex; flex-direction: column; gap: 6px; }
+    .img-gallery-item img {
+      width: 100%; border-radius: 10px; display: block;
+      border: 1px solid var(--border);
+      box-shadow: 0 2px 12px rgba(26,32,53,.06);
+      transition: box-shadow .2s, transform .2s;
+      cursor: pointer;
+    }
+    .img-gallery-item img:hover {
+      box-shadow: 0 6px 24px rgba(26,32,53,.14);
+      transform: translateY(-2px);
+    }
+    .img-gallery-caption {
+      font-size: var(--fs-label); font-weight: 600;
+      text-transform: uppercase; letter-spacing: .07em;
+      color: var(--text-muted);
+    }
+
+    /* ── AI CARD GRID ── */
+    .ai-grid {
+      display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; margin-top: 32px;
+    }
+
     hr { border: none; border-top: 1px solid var(--border); margin: 48px 0; }
 
     /* ── STAT ROW ── */
@@ -230,7 +264,7 @@
       .decision-diagram { grid-template-columns: 1fr; }
       .img-row.cols-2 { grid-template-columns: 1fr; }
       .stat-row { grid-template-columns: 1fr; }
-      .project-nav { padding: 32px 24px; flex-direction: column; gap: 20px; }
+      .project-nav { padding: 32px 24px; }
     }
 
     @media (max-width: 600px) {
@@ -244,7 +278,11 @@
       .img-block { padding: 0 0 24px; }
       .process-steps { gap: 12px; }
       .challenge { padding: 20px; }
-      .project-nav { padding: 24px 20px; }
+      .project-nav { padding: 20px 20px; gap: 12px; flex-wrap: wrap; }
+      .project-nav a.prev { order: 1; }
+      .project-nav a.next { order: 2; margin-left: auto; }
+      .ai-grid { grid-template-columns: 1fr; }
+      .img-gallery-grid { grid-template-columns: 1fr; }
     }
 
     /* ── LIGHTBOX ── */
@@ -483,22 +521,24 @@
     <h2>Every card opens into its own complex sub-screen</h2>
     <p>The summary card layout looks simple from the outside. What it hides is that each card — Triggers, Employees, Messages — opens into a detailed configuration screen with its own logic, edge cases, and states. The Messages card alone covers delivery methods, rule actions, recipient roles, message templates, and variable injection.</p>
     <p>This is where a lot of the design complexity lived: making each sub-screen feel approachable without losing the power underneath it.</p>
-    <div style="margin-top:28px;">
-      <p class="img-label" style="margin-bottom:10px;">Summary cards — the full rule at a glance</p>
-      <img src="images/summary-complete.png" alt="VIA summary cards showing complete rule configuration" style="width:100%;border-radius:10px;display:block;margin-bottom:24px;" / data-lightbox data-caption="VIA summary cards showing complete rule configuration" />
-    </div>
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
-      <div>
-        <p class="img-label" style="margin-bottom:8px;">Assign employees</p>
-        <img src="images/edit-employees.png" alt="Assign employees configuration panel" style="width:100%;border-radius:10px;display:block;" / data-lightbox data-caption="Assign employees configuration panel" />
+    <div class="img-gallery">
+      <div class="img-gallery-main">
+        <img src="images/summary-complete.png" alt="VIA summary cards showing complete rule configuration" data-lightbox data-caption="Summary cards — the full rule at a glance" />
+        <p class="img-gallery-caption" style="margin-top:8px;">Summary cards — the full rule at a glance</p>
       </div>
-      <div>
-        <p class="img-label" style="margin-bottom:8px;">Edit triggers</p>
-        <img src="images/edit-triggers.png" alt="Edit triggers configuration panel" style="width:100%;border-radius:10px;display:block;" / data-lightbox data-caption="Edit triggers configuration panel" />
-      </div>
-      <div>
-        <p class="img-label" style="margin-bottom:8px;">Edit messages</p>
-        <img src="images/messages-card-preview.png" alt="Edit messages configuration panel with templates" style="width:100%;border-radius:10px;display:block;" / data-lightbox data-caption="Edit messages configuration panel with templates" />
+      <div class="img-gallery-grid">
+        <div class="img-gallery-item">
+          <img src="images/edit-employees.png" alt="Assign employees configuration panel" data-lightbox data-caption="Assign employees" />
+          <span class="img-gallery-caption">Assign employees</span>
+        </div>
+        <div class="img-gallery-item">
+          <img src="images/edit-triggers.png" alt="Edit triggers configuration panel" data-lightbox data-caption="Edit triggers" />
+          <span class="img-gallery-caption">Edit triggers</span>
+        </div>
+        <div class="img-gallery-item">
+          <img src="images/messages-card-preview.png" alt="Edit messages configuration panel" data-lightbox data-caption="Edit messages" />
+          <span class="img-gallery-caption">Edit messages</span>
+        </div>
       </div>
     </div>
   </section>
@@ -508,7 +548,7 @@
     <p class="section-label">✦ AI in the process</p>
     <h2>Claude as a thinking partner throughout</h2>
     <p>I used Claude at multiple stages of this project, not to replace thinking, but to move faster through it. Each use was intentional and hands-on: I wrote the prompts, reviewed the output critically, and directed the next step.</p>
-    <div class="process-steps" style="grid-template-columns: repeat(2, 1fr);">
+    <div class="ai-grid">
       <div class="process-step" style="border-left: 3px solid var(--accent);">
         <span class="ai-star" aria-label="AI"><span class="ai-star-icon">✦</span><span class="ai-star-label">AI</span></span>
         <p class="step-number">Understanding</p>
