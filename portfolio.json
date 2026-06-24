@@ -1,0 +1,100 @@
+{
+  "designer": {
+    "name": "Liat Vax",
+    "title": "Senior UX Designer",
+    "experience": "10+ years",
+    "tagline": "My favorite design tool is the word \"why.\" Every simple solution starts there.",
+    "portfolio_url": "https://liat-vax.github.io/portfolio",
+    "cv_url": "https://liat-vax.github.io/portfolio/images/Liat%20Vax%20CV.pdf"
+  },
+  "about": {
+    "headline": "I make complex products feel obvious.",
+    "bio": [
+      "Senior UX Designer and Research Lead with 10+ years of experience. I own the whole arc of a product — from early requirements and research through design systems, dev handoff and QA — usually shoulder-to-shoulder with PMs, engineers and whoever else it takes to get it right. I've also built a research function almost from scratch.",
+      "My path into UX started in CX consulting, where I spent years studying how people actually behave, not how they say they do. That grounding in real human behaviour shapes everything I design, and an MBA in Big Data & Analytics keeps my instincts honest, so every creative call comes with data to back it up.",
+      "Outside of work, I'm usually making something — art, tasty food, or memories with my family."
+    ],
+    "background": [
+      "CX Consulting",
+      "MBA in Big Data & Analytics"
+    ]
+  },
+  "contact": {
+    "email": "liatvax@gmail.com",
+    "phone": "+972 52-220-3315",
+    "linkedin": "https://il.linkedin.com/in/liat-vax",
+    "availability": "Actively looking for a full-time role in product design. Open to interesting projects and collaborations."
+  },
+  "projects": [
+    {
+      "id": "via",
+      "number": "01",
+      "category": "Enterprise · SaaS",
+      "title": "VIA — Verint Intraday Automation",
+      "short_title": "VIA",
+      "description": "Real-time workforce automation — from AI brainstorming to a breakthrough conflict detection nobody had seen coming.",
+      "tags": [
+        "Verint",
+        "Workforce Management",
+        "Real-Time",
+        "Desktop",
+        "Complex Systems",
+        "Built from Scratch",
+        "AI Assisted"
+      ],
+      "url": "https://liat-vax.github.io/portfolio/via/via.html",
+      "preview_image": "https://liat-vax.github.io/portfolio/via/images/rules-list.png",
+      "ai_assisted": true
+    },
+    {
+      "id": "iec",
+      "number": "02",
+      "category": "Consumer Platform",
+      "title": "IEC New Website",
+      "short_title": "IEC",
+      "description": "An extensive redesign of the IEC website — clarity and efficiency first, across every device and user type.",
+      "tags": [
+        "Responsive Website",
+        "Redesign",
+        "UX Lead",
+        "Matrix"
+      ],
+      "url": "https://liat-vax.github.io/portfolio/iec/iec.html",
+      "preview_image": "https://liat-vax.github.io/portfolio/iec/images/hero.png",
+      "ai_assisted": false
+    },
+    {
+      "id": "amwell",
+      "number": "03",
+      "category": "Healthcare",
+      "title": "American Well",
+      "short_title": "Amwell",
+      "description": "A reimagined dashboard that turned data overload into confident, clear action for clinicians and administrators.",
+      "tags": [
+        "Enterprise Dashboard",
+        "Complex System",
+        "Desktop",
+        "Matrix"
+      ],
+      "url": "https://liat-vax.github.io/portfolio/amwell/amwell.html",
+      "preview_image": "https://liat-vax.github.io/portfolio/amwell/images/hero.png",
+      "ai_assisted": false
+    },
+    {
+      "id": "idf",
+      "number": "04",
+      "category": "Government",
+      "title": "IDF — Emergency Instructors",
+      "short_title": "IDF",
+      "description": "Two complementary systems built from scratch for emergency instructor management in the Israel Defense Forces.",
+      "tags": [
+        "Mobile",
+        "Desktop",
+        "Built from Scratch"
+      ],
+      "url": "https://liat-vax.github.io/portfolio/idf/idf.html",
+      "preview_image": "https://liat-vax.github.io/portfolio/idf/images/desktop/week-view.png",
+      "ai_assisted": false
+    }
+  ]
+}
