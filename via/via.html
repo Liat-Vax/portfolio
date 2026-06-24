@@ -195,32 +195,51 @@
     .img-row { display: grid; gap: 16px; }
     .img-row.cols-2 { grid-template-columns: 1fr 1fr; }
 
-    /* ── IMAGE GALLERY ── */
-    .img-gallery { margin-top: 28px; }
-    .img-gallery-main { margin-bottom: 12px; }
-    .img-gallery-main img {
-      width: 100%; border-radius: 12px; display: block;
-      border: 1px solid var(--border);
-      box-shadow: 0 4px 24px rgba(26,32,53,.08);
+    /* ── CAROUSEL ── */
+    .carousel-wrap { position: relative; margin-top: 28px; }
+    .carousel-btn {
+      position: absolute; top: 50%; transform: translateY(-60%);
+      z-index: 10; width: 36px; height: 36px;
+      background: var(--card-bg); border: 1px solid var(--border);
+      border-radius: 50%; cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      box-shadow: 0 2px 8px rgba(0,0,0,.10);
+      transition: background .15s, box-shadow .15s;
+      font-size: 1rem; color: var(--text); line-height: 1;
     }
-    .img-gallery-grid {
-      display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-top: 12px;
+    .carousel-btn:hover:not(:disabled) { background: var(--accent); color: #fff; border-color: var(--accent); box-shadow: 0 4px 12px rgba(59,95,165,.25); }
+    .carousel-btn:disabled { opacity: 0; cursor: default; pointer-events: none; }
+    .carousel-btn.prev-btn { left: 4px; }
+    .carousel-btn.next-btn { right: 4px; }
+    .via-carousel {
+      display: flex; gap: 14px;
+      overflow-x: auto; overflow-y: visible;
+      scroll-snap-type: x mandatory;
+      -webkit-overflow-scrolling: touch;
+      padding: 8px 32px 20px;
+      scrollbar-width: none;
+      cursor: grab;
+      user-select: none;
     }
-    .img-gallery-item { display: flex; flex-direction: column; gap: 6px; }
-    .img-gallery-item img {
+    .via-carousel.dragging { cursor: grabbing; scroll-snap-type: none; }
+    .via-carousel::-webkit-scrollbar { display: none; }
+    .via-carousel .mc-item {
+      flex: 0 0 auto;
+      display: flex; flex-direction: column; align-items: flex-start; gap: 8px;
+      scroll-snap-align: start;
+      width: 80%;
+    }
+    .via-carousel .mc-item img {
       width: 100%; border-radius: 10px; display: block;
       border: 1px solid var(--border);
-      box-shadow: 0 2px 12px rgba(26,32,53,.06);
-      transition: box-shadow .2s, transform .2s;
-      cursor: pointer;
+      box-shadow: 0 4px 16px rgba(0,0,0,.07);
+      cursor: zoom-in;
+      transition: transform .18s, box-shadow .18s;
     }
-    .img-gallery-item img:hover {
-      box-shadow: 0 6px 24px rgba(26,32,53,.14);
-      transform: translateY(-2px);
-    }
-    .img-gallery-caption {
-      font-size: var(--fs-label); font-weight: 600;
-      text-transform: uppercase; letter-spacing: .07em;
+    .via-carousel .mc-item img:hover { transform: scale(1.01); box-shadow: 0 8px 28px rgba(0,0,0,.12); }
+    .via-carousel .mc-label {
+      font-size: .65rem; font-weight: 600;
+      text-transform: uppercase; letter-spacing: .08em;
       color: var(--text-muted);
     }
 
@@ -282,7 +301,8 @@
       .project-nav a.prev { order: 1; }
       .project-nav a.next { order: 2; margin-left: auto; }
       .ai-grid { grid-template-columns: 1fr; }
-      .img-gallery-grid { grid-template-columns: 1fr; }
+      .via-carousel .mc-item { width: 88%; }
+      .via-carousel { padding: 8px 16px 16px; }
     }
 
     /* ── LIGHTBOX ── */
@@ -521,23 +541,25 @@
     <h2>Every card opens into its own complex sub-screen</h2>
     <p>The summary card layout looks simple from the outside. What it hides is that each card — Triggers, Employees, Messages — opens into a detailed configuration screen with its own logic, edge cases, and states. The Messages card alone covers delivery methods, rule actions, recipient roles, message templates, and variable injection.</p>
     <p>This is where a lot of the design complexity lived: making each sub-screen feel approachable without losing the power underneath it.</p>
-    <div class="img-gallery">
-      <div class="img-gallery-main">
-        <img src="images/summary-complete.png" alt="VIA summary cards showing complete rule configuration" data-lightbox data-caption="Summary cards — the full rule at a glance" />
-        <p class="img-gallery-caption" style="margin-top:8px;">Summary cards — the full rule at a glance</p>
-      </div>
-      <div class="img-gallery-grid">
-        <div class="img-gallery-item">
+    <div class="carousel-wrap">
+      <button class="carousel-btn prev-btn" id="via-prev" onclick="scrollViaCarousel(-1)" aria-label="Previous" disabled>&#8592;</button>
+      <button class="carousel-btn next-btn" id="via-next" onclick="scrollViaCarousel(1)" aria-label="Next">&#8594;</button>
+      <div class="via-carousel" id="viaCarousel">
+        <div class="mc-item">
+          <img src="images/summary-complete.png" alt="Summary cards — the full rule at a glance" data-lightbox data-caption="Summary cards — the full rule at a glance" />
+          <span class="mc-label">Summary cards — the full rule at a glance</span>
+        </div>
+        <div class="mc-item">
           <img src="images/edit-employees.png" alt="Assign employees configuration panel" data-lightbox data-caption="Assign employees" />
-          <span class="img-gallery-caption">Assign employees</span>
+          <span class="mc-label">Assign employees</span>
         </div>
-        <div class="img-gallery-item">
+        <div class="mc-item">
           <img src="images/edit-triggers.png" alt="Edit triggers configuration panel" data-lightbox data-caption="Edit triggers" />
-          <span class="img-gallery-caption">Edit triggers</span>
+          <span class="mc-label">Edit triggers</span>
         </div>
-        <div class="img-gallery-item">
+        <div class="mc-item">
           <img src="images/messages-card-preview.png" alt="Edit messages configuration panel" data-lightbox data-caption="Edit messages" />
-          <span class="img-gallery-caption">Edit messages</span>
+          <span class="mc-label">Edit messages</span>
         </div>
       </div>
     </div>
@@ -595,6 +617,53 @@
     entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); observer.unobserve(e.target); } });
   }, { threshold: 0.12 });
   document.querySelectorAll('.fade-up').forEach(el => observer.observe(el));
+
+  // ── VIA CAROUSEL ──
+  (function() {
+    var el = document.getElementById('viaCarousel');
+    var prevBtn = document.getElementById('via-prev');
+    var nextBtn = document.getElementById('via-next');
+    if (!el || !prevBtn || !nextBtn) return;
+
+    function updateBtns() {
+      prevBtn.disabled = el.scrollLeft <= 8;
+      nextBtn.disabled = el.scrollLeft + el.clientWidth >= el.scrollWidth - 8;
+    }
+
+    window.scrollViaCarousel = function(dir) {
+      el.scrollBy({ left: dir * (el.clientWidth * 0.82), behavior: 'smooth' });
+    };
+
+    el.addEventListener('scroll', updateBtns, { passive: true });
+    el.addEventListener('scrollend', updateBtns);
+    el.querySelectorAll('img').forEach(function(img) { img.addEventListener('load', updateBtns); });
+    window.addEventListener('load', updateBtns);
+    setTimeout(updateBtns, 100);
+    setTimeout(updateBtns, 500);
+
+    // Click-and-drag
+    var startX, scrollLeft0, dragging = false, moved = false;
+    el.addEventListener('mousedown', function(e) {
+      dragging = true; moved = false;
+      startX = e.pageX - el.offsetLeft;
+      scrollLeft0 = el.scrollLeft;
+      el.classList.add('dragging');
+    });
+    window.addEventListener('mousemove', function(e) {
+      if (!dragging) return;
+      e.preventDefault();
+      var walk = (e.pageX - el.offsetLeft - startX) * 1.4;
+      if (Math.abs(walk) > 4) moved = true;
+      el.scrollLeft = scrollLeft0 - walk;
+      updateBtns();
+    });
+    window.addEventListener('mouseup', function() {
+      if (!dragging) return;
+      dragging = false;
+      el.classList.remove('dragging');
+      updateBtns();
+    });
+  })();
 </script>
 
 
