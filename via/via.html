@@ -700,7 +700,7 @@
         img.addEventListener('click', function() { openAt(i); });
       });
     }
-    function openAt(idx) { current = idx; showImage(idx); document.getElementById('lb-overlay').classList.add('active'); document.body.style.overflow = 'hidden'; }
+    function openAt(idx) { current = idx; showImage(idx); document.getElementById('lb-overlay').classList.add('active'); document.body.style.overflow = 'hidden'; if(typeof gtag!=='undefined') gtag('event','lightbox_opened',{'image_caption': images[idx]?images[idx].dataset.caption||images[idx].alt||('image '+(idx+1)):('image '+(idx+1))}); }
     function showImage(idx) {
       var lbImg = document.getElementById('lb-img');
       lbImg.style.opacity = '0';
@@ -805,7 +805,7 @@
   (function(){
     var egg=document.getElementById("easter-egg"),closeBtn=document.getElementById("egg-close"),starsEl=document.getElementById("egg-stars");
     for(var i=0;i<55;i++){var s=document.createElement("div");s.className="egg-star";var sz=Math.random()*2.5+1;s.style.cssText="width:"+sz+"px;height:"+sz+"px;left:"+(Math.random()*100)+"%%;top:"+(Math.random()*100)+"%%;animation-delay:"+(Math.random()*3)+"s;animation-duration:"+(2.5+Math.random()*2)+"s;";starsEl.appendChild(s);}
-    function openEgg(){egg.classList.add("active");requestAnimationFrame(function(){requestAnimationFrame(function(){egg.classList.add("splitting");});});}
+    function openEgg(){egg.classList.add("active");requestAnimationFrame(function(){requestAnimationFrame(function(){egg.classList.add("splitting");});});if(typeof gtag!=='undefined') gtag('event','easter_egg_opened',{'page_title':document.title});}
     function closeEgg(){egg.classList.remove("splitting");setTimeout(function(){egg.classList.remove("active");},900);}
     document.querySelectorAll(".case-hero-tag").forEach(function(tag){var btn=document.createElement("button");btn.className="tag-x";btn.setAttribute("aria-label","Easter egg");btn.textContent="\u00d7";btn.addEventListener("click",function(e){e.preventDefault();e.stopPropagation();openEgg();});tag.appendChild(btn);});
     closeBtn.addEventListener("click",closeEgg);

@@ -1723,6 +1723,7 @@
   const galClose    = document.getElementById('gallery-close');
 
   function openGallery(projectIdx, startIdx = 0) {
+    var projectNames=["VIA","IEC","Amwell","IDF"]; if(typeof gtag!=="undefined") gtag("event","project_gallery_opened",{"project": projectNames[projectIdx]||"project "+(projectIdx+1)});
     galProjectIdx = projectIdx;
     galImages = GALLERIES[projectIdx].images;
     galTitle.textContent = GALLERIES[projectIdx].title;
@@ -1846,6 +1847,7 @@
   })();
 
   function openAboutGallery(idx) {
+    if(typeof gtag!=="undefined") gtag("event","about_photo_opened",{"photo_index": idx+1});
     aboutPrevFocus = document.activeElement;
     document.body.style.overflow = 'hidden';
     aboutModal.classList.add('open');
