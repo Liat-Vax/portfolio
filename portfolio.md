@@ -1,6 +1,6 @@
 # Liat Vax — UX Portfolio
 
-**Senior UX Designer · 10+ Years Experience**
+**Senior Product Designer · 10+ Years Experience**
 
 > My favorite design tool is the word "why." Every simple solution starts there.
 
@@ -12,7 +12,7 @@
 
 **I make complex products feel obvious.**
 
-I'm a designer who's happiest in the messy middle of a hard problem. As a Senior UX Designer and Research Lead, I own the whole arc of a product — from early requirements and research through design systems, dev handoff and QA — usually shoulder-to-shoulder with PMs, engineers and whoever else it takes to get it right. I've also built a research function almost from scratch, which taught me as much about persistence as it did about users.
+I'm a designer who's happiest in the messy middle of a hard problem. As a Senior Product Designer and Research Lead, I own the whole arc of a product — from early requirements and research through design systems, dev handoff and QA — usually shoulder-to-shoulder with PMs, engineers and whoever else it takes to get it right. I've also built a research function almost from scratch, which taught me as much about persistence as it did about users.
 
 I'm relentlessly curious: I teach myself whatever the problem needs, and I'm quick to pick up new tools and technologies rather than wait for them to become standard. My path into UX started in **CX consulting**, where I spent years studying how people actually behave, not how they say they do. That grounding in real human behaviour shapes everything I design, and an **MBA in Big Data & Analytics** keeps my instincts honest, so every creative call comes with data to back it up.
 
